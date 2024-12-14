@@ -180,7 +180,7 @@ function App() {
 
           <fieldset className="relative">
             <label htmlFor="call-count" className="text-gray-700">
-              Number of API Calls
+              Number of Calls
             </label>
             <input type="number" id="call-count" value={numberOfCalls} onChange={(e) => setNumberOfCalls(Math.floor(Number(e.target.value)))} min={1} className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono" name="call-count" />
           </fieldset>
@@ -223,7 +223,7 @@ function App() {
         </div>
 
         {/* Result Table */}
-        <table className='mt-4 w-full table-auto border rounded-lg'>
+        <table className='mt-4 w-full table-auto border rounded-lg mb-2'>
           <thead className=''>
             <tr>
               <th className='font-bold border bg-gray-50 border-black'>Provider</th>
