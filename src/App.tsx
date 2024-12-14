@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import GitHubIcon from "./asset/github.svg"
+import HeartIcon from "./asset/heart.svg"
 
 type Pricing = {
   inputTokenCostInDollarsPerMillionTokens: number,
@@ -111,10 +113,13 @@ function round(number: number, precision: number): string {
 
 function Header() {
   return (
-    <header className="bg-blue-200 text-center w-full py-4 mb-4">
+    <header className="bg-blue-200 w-full py-2 md:py-4 mb-4 flex flex-row justify-between px-4 md:px-6">
       <h1 className='font-bold text-2xl'>
         LLM Price Calculator
       </h1>
+      <a href="https://github.com/Siddhesh-Agarwal/llm-price-calculator" target="_blank" rel="noreferrer" className='hover:bg-blue-300 py-1 px-2 rounded-md'>
+        <img src={GitHubIcon} alt="GitHub" className='w-6 h-6' />
+      </a>
     </header>
   )
 }
@@ -123,7 +128,7 @@ function Footer() {
   return (
     <footer className="bg-blue-200 text-center w-full py-4">
       <h1 className='font-bold'>
-        Made by <a href="https://github.com/Siddhesh-Agarwal" target="_blank" rel="noreferrer" className='underline text-blue-600'>Siddhesh Agarwal</a>
+        Made by <a href="https://github.com/Siddhesh-Agarwal" target="_blank" rel="noreferrer" className='underline text-blue-600'>Siddhesh Agarwal</a> with <img src={HeartIcon} alt="Heart" className='w-4 h-4 inline' />
       </h1>
     </footer>
   )
