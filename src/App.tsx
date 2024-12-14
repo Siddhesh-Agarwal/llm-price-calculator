@@ -136,6 +136,7 @@ function Footer() {
 
 function App() {
   const precision = 3;
+  const [inputUnit, setInputUnit] = useState<'Tokens' | 'Words'>('Tokens');
   const [inputTokens, setInputTokens] = useState<number>(0);
   const [outputTokens, setOutputTokens] = useState<number>(0);
   const [numberOfCalls, setNumberOfCalls] = useState<number>(1);
@@ -165,14 +166,14 @@ function App() {
         <div className="grid grid-cols-3 gap-4 md:gap-4">
           <fieldset className="relative">
             <label htmlFor="input-tokens" className="text-gray-700">
-              Input Tokens
+              Input {inputUnit}
             </label>
             <input type="number" id="input-tokens" value={inputTokens} onChange={(e) => setInputTokens(Math.floor(Number(e.target.value)))} min={0} className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono" name="input-tokens" />
           </fieldset>
 
           <fieldset className="relative">
             <label htmlFor="output-tokens" className="text-gray-700">
-              Output Tokens
+              Output {inputUnit}
             </label>
             <input type="number" id="output-tokens" value={outputTokens} onChange={(e) => setOutputTokens(Math.floor(Number(e.target.value)))} min={0} className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono" name="output-tokens" />
           </fieldset>
@@ -185,27 +186,40 @@ function App() {
           </fieldset>
         </div>
 
-        {/* Currency */}
-        <fieldset className="relative py-2">
-          <label htmlFor="currency" className="text-gray-700">
-            Currency
-          </label>
-          <select id="currency" name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} className="rounded-sm">
-            {/* Currency */}
-            <option value="AED">AED</option>
-            <option value="AUD">AUD</option>
-            <option value="EUR">EUR</option>
-            <option value="GBP">GBP</option>
-            <option value="INR">INR</option>
-            <option value="JPY">JPY</option>
-            <option value="USD" defaultChecked>USD</option>
+        <div className="flex flex-row">
+          {/* Currency */}
+          <fieldset className="relative p-2">
+            <label htmlFor="currency" className="text-gray-700">
+              Currency
+            </label>
+            <select id="currency" name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} className="rounded-sm">
+              {/* Currency */}
+              <option value="AED">AED</option>
+              <option value="AUD">AUD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+              <option value="INR">INR</option>
+              <option value="JPY">JPY</option>
+              <option value="USD" defaultChecked>USD</option>
 
-            {/* Crypto */}
-            <option value="BTC">BTC</option>
-            <option value="ETH">ETH</option>
-            <option value="SOL">SOL</option>
-          </select>
-        </fieldset>
+              {/* Crypto */}
+              <option value="BTC">BTC</option>
+              <option value="ETH">ETH</option>
+              <option value="SOL">SOL</option>
+            </select>
+          </fieldset>
+
+          {/* Input Unit */}
+          <fieldset className="relative p-2">
+            <label htmlFor="input-unit" className="text-gray-700">
+              Input Unit
+            </label>
+            <select id="input-unit" name="input-unit" value={inputUnit} onChange={(e) => setInputUnit(e.target.value as 'Tokens' | 'Words')} className="rounded-sm">
+              <option value="Tokens" defaultChecked>Tokens</option>
+              <option value="Words">Words</option>
+            </select>
+          </fieldset>
+        </div>
 
         {/* Result Table */}
         <table className='mt-4 w-full table-auto border rounded-lg'>
@@ -220,8 +234,9 @@ function App() {
           </thead>
           <tbody className='font-mono'>
             {Providers.map((provider, index) => {
-              const inputCost = provider.price.inputTokenCostInDollarsPerMillionTokens * inputTokens * conversionRate * numberOfCalls;
-              const outputCost = provider.price.outputTokenCostInDollarsPerMillionTokens * outputTokens * conversionRate * numberOfCalls;
+              const numberOfTokensPerUnit = inputUnit === 'Tokens' ? 1 : 1.333;
+              const inputCost = provider.price.inputTokenCostInDollarsPerMillionTokens * numberOfTokensPerUnit * inputTokens * conversionRate * numberOfCalls;
+              const outputCost = provider.price.outputTokenCostInDollarsPerMillionTokens * numberOfTokensPerUnit * outputTokens * conversionRate * numberOfCalls;
               return (
                 <tr key={index}>
                   <td className='border px-2 py-1 text-center'>{provider.name}</td>
