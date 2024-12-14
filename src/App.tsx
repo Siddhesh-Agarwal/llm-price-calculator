@@ -136,7 +136,7 @@ function Footer() {
 
 function App() {
   const precision = 3;
-  const [inputUnit, setInputUnit] = useState<'Tokens' | 'Words'>('Tokens');
+  const [inputUnit, setInputUnit] = useState<'Tokens' | 'Words' | 'Characters'>('Tokens');
   const [inputTokens, setInputTokens] = useState<number>(0);
   const [outputTokens, setOutputTokens] = useState<number>(0);
   const [numberOfCalls, setNumberOfCalls] = useState<number>(1);
@@ -214,9 +214,10 @@ function App() {
             <label htmlFor="input-unit" className="text-gray-700">
               Input Unit
             </label>
-            <select id="input-unit" name="input-unit" value={inputUnit} onChange={(e) => setInputUnit(e.target.value as 'Tokens' | 'Words')} className="rounded-sm">
+            <select id="input-unit" name="input-unit" value={inputUnit} onChange={(e) => setInputUnit(e.target.value as 'Tokens' | 'Words' | 'Characters')} className="rounded-sm">
               <option value="Tokens" defaultChecked>Tokens</option>
               <option value="Words">Words</option>
+              <option value="Characters">Characters</option>
             </select>
           </fieldset>
         </div>
@@ -234,7 +235,12 @@ function App() {
           </thead>
           <tbody className='font-mono'>
             {Providers.map((provider, index) => {
-              const numberOfTokensPerUnit = inputUnit === 'Tokens' ? 1 : 1.333;
+              let numberOfTokensPerUnit = 1;
+              if (inputUnit === 'Words') {
+                numberOfTokensPerUnit = 1.333; // 0.75 words per token
+              } else if (inputUnit === 'Characters') {
+                numberOfTokensPerUnit = 0.400; // 2.5 characters per token
+              }
               const inputCost = provider.price.inputTokenCostInDollarsPerMillionTokens * numberOfTokensPerUnit * inputTokens * conversionRate * numberOfCalls;
               const outputCost = provider.price.outputTokenCostInDollarsPerMillionTokens * numberOfTokensPerUnit * outputTokens * conversionRate * numberOfCalls;
               return (
