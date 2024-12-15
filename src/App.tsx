@@ -107,7 +107,6 @@ const Providers: ProviderDetails[] = [
 function round(number: number, precision: number): string {
   const pow = Math.pow(10, precision);
   const ans = Math.round((number / 1e6) * pow) / pow;
-  // Keep exacly "precision" decimal places
   return ans.toFixed(precision);
 }
 
@@ -189,10 +188,10 @@ function App() {
         <div className="flex flex-row">
           {/* Currency */}
           <fieldset className="relative p-2">
-            <label htmlFor="currency" className="text-gray-700">
+            <label htmlFor="currency" className="text-gray-700 mr-1">
               Currency
             </label>
-            <select id="currency" name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} className="rounded-sm">
+            <select id="currency" name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} className="rounded-sm border">
               {/* Currency */}
               <option value="AED">AED</option>
               <option value="AUD">AUD</option>
@@ -211,10 +210,10 @@ function App() {
 
           {/* Input Unit */}
           <fieldset className="relative p-2">
-            <label htmlFor="input-unit" className="text-gray-700">
+            <label htmlFor="input-unit" className="text-gray-700 mr-1">
               Input Unit
             </label>
-            <select id="input-unit" name="input-unit" value={inputUnit} onChange={(e) => setInputUnit(e.target.value as 'Tokens' | 'Words' | 'Characters')} className="rounded-sm">
+            <select id="input-unit" name="input-unit" value={inputUnit} onChange={(e) => setInputUnit(e.target.value as 'Tokens' | 'Words' | 'Characters')} className="rounded-sm border">
               <option value="Tokens" defaultChecked>Tokens</option>
               <option value="Words">Words</option>
               <option value="Characters">Characters</option>
