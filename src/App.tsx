@@ -16,7 +16,23 @@ type ProviderDetails = {
 const Providers: ProviderDetails[] = [
   {
     name: 'OpenAI',
-    model: 'GPT-4o',
+    model: 'gpt-3.5-turbo',
+    price: {
+      inputTokenCostInDollarsPerMillionTokens: 1.00,
+      outputTokenCostInDollarsPerMillionTokens: 2.00,
+    },
+  },
+  {
+    name: 'OpenAI',
+    model: 'gpt-4',
+    price: {
+      inputTokenCostInDollarsPerMillionTokens: 30.00,
+      outputTokenCostInDollarsPerMillionTokens: 60.00,
+    },
+  },
+  {
+    name: 'OpenAI',
+    model: 'gpt-4o',
     price: {
       inputTokenCostInDollarsPerMillionTokens: 2.50,
       outputTokenCostInDollarsPerMillionTokens: 10.00,
@@ -24,7 +40,7 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'OpenAI',
-    model: 'GPT-4o mini',
+    model: 'gpt-4o-mini',
     price: {
       inputTokenCostInDollarsPerMillionTokens: 0.15,
       outputTokenCostInDollarsPerMillionTokens: 0.60,
@@ -32,7 +48,7 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'OpenAI',
-    model: 'o1 preview',
+    model: 'o1-preview',
     price: {
       inputTokenCostInDollarsPerMillionTokens: 15.00,
       outputTokenCostInDollarsPerMillionTokens: 60.00,
@@ -40,7 +56,7 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'OpenAI',
-    model: 'o1 mini',
+    model: 'o1-mini',
     price: {
       inputTokenCostInDollarsPerMillionTokens: 3.00,
       outputTokenCostInDollarsPerMillionTokens: 12.00,
