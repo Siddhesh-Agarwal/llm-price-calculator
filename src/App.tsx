@@ -197,106 +197,86 @@ function App() {
   // create an input field for input tokens and output tokens and calculate the cost for each provider 
   return (
     <div className='min-h-screen flex flex-col items-center justify-between'>
-      {/* Header */}
       <Header />
 
       <div className="container p-0">
-        {/* Input and Output Tokens */}
         <div className="grid grid-cols-3 gap-4 md:gap-4">
-          <fieldset className="relative">
-            <label htmlFor="input-tokens" className="text-gray-700">
-              Input {inputUnit}
-            </label>
-            <input type="number" id="input-tokens" value={inputTokens} onChange={(e) => setInputTokens(Math.floor(Number(e.target.value)))} min={0} className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono" name="input-tokens" />
-          </fieldset>
-
-          <fieldset className="relative">
-            <label htmlFor="output-tokens" className="text-gray-700">
-              Output {inputUnit}
-            </label>
-            <input type="number" id="output-tokens" value={outputTokens} onChange={(e) => setOutputTokens(Math.floor(Number(e.target.value)))} min={0} className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono" name="output-tokens" />
-          </fieldset>
-
-          <fieldset className="relative">
-            <label htmlFor="call-count" className="text-gray-700">
-              Number of Calls
-            </label>
-            <input type="number" id="call-count" value={numberOfCalls} onChange={(e) => setNumberOfCalls(Math.floor(Number(e.target.value)))} min={1} className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono" name="call-count" />
-          </fieldset>
+          {[
+            { id: 'input-tokens', label: 'Input', value: inputTokens, setValue: setInputTokens, min: 0 },
+            { id: 'output-tokens', label: 'Output', value: outputTokens, setValue: setOutputTokens, min: 0 },
+            { id: 'call-count', label: 'Number of Calls', value: numberOfCalls, setValue: setNumberOfCalls, min: 1 }
+          ].map(({ id, label, value, setValue, min }) => (
+            <fieldset key={id} className="relative">
+              <label htmlFor={id} className="text-gray-700">
+                {label} {inputUnit}
+              </label>
+              <input
+                type="number"
+                id={id}
+                value={value}
+                onChange={(e) => setValue(Math.floor(Number(e.target.value)))}
+                min={min}
+                className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono"
+                name={id}
+              />
+            </fieldset>
+          ))}
         </div>
 
         <div className="flex flex-row">
-          {/* Currency */}
-          <fieldset className="relative p-2">
-            <label htmlFor="currency" className="text-gray-700 mr-1">
-              Currency
-            </label>
-            <select id="currency" name="currency" value={currency} onChange={(e) => setCurrency(e.target.value)} className="rounded-sm border">
-              {/* Currency */}
-              <option value="AED">AED</option>
-              <option value="AUD">AUD</option>
-              <option value="EUR">EUR</option>
-              <option value="GBP">GBP</option>
-              <option value="INR">INR</option>
-              <option value="JPY">JPY</option>
-              <option value="USD" defaultChecked>USD</option>
-
-              {/* Crypto */}
-              <option value="BTC">BTC</option>
-              <option value="ETH">ETH</option>
-              <option value="SOL">SOL</option>
-            </select>
-          </fieldset>
-
-          {/* Input Unit */}
-          <fieldset className="relative p-2">
-            <label htmlFor="input-unit" className="text-gray-700 mr-1">
-              Input Unit
-            </label>
-            <select id="input-unit" name="input-unit" value={inputUnit} onChange={(e) => setInputUnit(e.target.value as 'Tokens' | 'Words' | 'Characters')} className="rounded-sm border">
-              <option value="Tokens" defaultChecked>Tokens</option>
-              <option value="Words">Words</option>
-              <option value="Characters">Characters</option>
-            </select>
-          </fieldset>
+          {[
+            { id: 'currency', label: 'Currency', value: currency, setValue: setCurrency, options: ['AED', 'AUD', 'EUR', 'GBP', 'INR', 'JPY', 'USD', 'BTC', 'ETH', 'SOL'] },
+            { id: 'input-unit', label: 'Input Unit', value: inputUnit, setValue: setInputUnit, options: ['Tokens', 'Words', 'Characters'] }
+          ].map(({ id, label, value, setValue, options }) => (
+            <fieldset key={id} className="relative p-2">
+              <label htmlFor={id} className="text-gray-700 mr-1">
+                {label}
+              </label>
+              <select
+                id={id}
+                name={id}
+                value={value}
+                onChange={(e) => setValue(e.target.value as "Tokens" | "Words" | "Characters")}
+                className="rounded-sm border"
+              >
+                {options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </fieldset>
+          ))}
         </div>
 
-        {/* Result Table */}
         <table className='mt-4 w-full table-auto border rounded-lg mb-2'>
-          <thead className=''>
+          <thead>
             <tr>
-              <th className='font-bold border bg-gray-50 border-black'>Provider</th>
-              <th className='font-bold border bg-gray-50 border-black'>Model</th>
-              <th className='font-bold border bg-gray-50 border-black'>Input Token Cost</th>
-              <th className='font-bold border bg-gray-50 border-black'>Output Token Cost</th>
-              <th className='font-bold border bg-gray-50 border-black'>Total Cost</th>
+              {['Provider', 'Model', 'Input Token Cost', 'Output Token Cost', 'Total Cost'].map((header) => (
+                <th key={header} className='font-bold border bg-gray-50 border-black'>{header}</th>
+              ))}
             </tr>
           </thead>
           <tbody className='font-mono'>
             {Providers.map((provider, index) => {
-              let numberOfTokensPerUnit = 1;
-              if (inputUnit === 'Words') {
-                numberOfTokensPerUnit = 1.333; // 0.75 words per token
-              } else if (inputUnit === 'Characters') {
-                numberOfTokensPerUnit = 0.400; // 2.5 characters per token
-              }
+              const numberOfTokensPerUnit = inputUnit === 'Words' ? 1.333 : inputUnit === 'Characters' ? 0.400 : 1;
               const inputCost = provider.price.inputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * inputTokens * conversionRate * numberOfCalls;
               const outputCost = provider.price.outputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * outputTokens * conversionRate * numberOfCalls;
+              const totalCost = inputCost + outputCost;
               return (
                 <tr key={index}>
                   <td className='border px-2 py-1 text-center'>{provider.name}</td>
                   <td className='border px-2 py-1 text-center'>{provider.model}</td>
                   <td className='border px-2 py-1 text-center'>{currency} {round(inputCost, precision)}</td>
                   <td className='border px-2 py-1 text-center'>{currency} {round(outputCost, precision)}</td>
-                  <td className='border px-2 py-1 text-center'>{currency} {round(inputCost + outputCost, precision)}</td>
+                  <td className='border px-2 py-1 text-center'>{currency} {round(totalCost, precision)}</td>
                 </tr>
-              )
+              );
             })}
           </tbody>
         </table>
       </div>
 
-      {/* Footer */}
       <Footer />
     </div>
   )
