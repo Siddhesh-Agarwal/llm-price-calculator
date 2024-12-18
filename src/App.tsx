@@ -112,10 +112,10 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'Google',
-    model: '1.5 Flash',
+    model: '1.0 Pro',
     price: {
-      inputCostInDollarsPerMillionTokens: 0.075,
-      outputCostInDollarsPerMillionTokens: 0.30,
+      inputCostInDollarsPerMillionTokens: 0.50,
+      outputCostInDollarsPerMillionTokens: 1.50,
     }
   },
   {
@@ -128,10 +128,10 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'Google',
-    model: '1.0 Pro',
+    model: '1.5 Flash',
     price: {
-      inputCostInDollarsPerMillionTokens: 0.50,
-      outputCostInDollarsPerMillionTokens: 1.50,
+      inputCostInDollarsPerMillionTokens: 0.075,
+      outputCostInDollarsPerMillionTokens: 0.30,
     }
   },
   {
