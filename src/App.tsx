@@ -167,7 +167,7 @@ function Header() {
 
 function Footer() {
   return (
-    <footer className="bg-blue-200 text-center w-full py-4">
+    <footer className="bg-blue-200 text-center w-full py-4 mt-4">
       <h1 className='font-bold'>
         Made by <a href="https://github.com/Siddhesh-Agarwal" target="_blank" rel="noreferrer" className='underline text-blue-600'>Siddhesh Agarwal</a> with <img src={HeartIcon} alt="Heart" className='w-4 h-4 inline' />
       </h1>
@@ -189,11 +189,17 @@ function App() {
     if (currency === 'USD') {
       setConversionRate(1);
     } else {
-      fetch("https://latest.currency-api.pages.dev/v1/currencies/usd.json")
-        .then((response) => response.json())
-        .then((data) => {
-          setConversionRate(data["usd"][currency.toLowerCase()]);
-        })
+      const storedData = sessionStorage.getItem('currencyData');
+      let data = (storedData) ? JSON.parse(storedData) : null;
+      if (data === null) {
+        data = fetch("https://latest.currency-api.pages.dev/v1/currencies/usd.json")
+          .then((response) => response.json())
+          .then((data) => {
+            sessionStorage.setItem('currencyData', JSON.stringify(data));
+            return data;
+          });
+      }
+      setConversionRate(data["usd"][currency.toLowerCase()]);
     }
   }, [currency]);
 
@@ -252,10 +258,10 @@ function App() {
           ))}
         </div>
 
-        <table className='mt-4 w-full table-auto border rounded-lg mb-2'>
+        <table className='mt-4 w-full table-fixed border rounded-lg mb-2'>
           <thead>
             <tr>
-              {['Provider', 'Model', 'Input Token Cost', 'Output Token Cost', 'Total Cost'].map((header) => (
+              {['Provider', 'Model', `Input Cost (${currency})`, `Output Cost (${currency})`, 'Total Cost'].map((header) => (
                 <th key={header} className='font-bold border bg-gray-50 border-black'>{header}</th>
               ))}
             </tr>
@@ -268,11 +274,11 @@ function App() {
               const totalCost = inputCost + outputCost;
               return (
                 <tr key={index}>
-                  <td className='border px-2 py-1 text-center'>{provider.name}</td>
-                  <td className='border px-2 py-1 text-center'>{provider.model}</td>
-                  <td className='border px-2 py-1 text-center'>{currency} {round(inputCost, precision)}</td>
-                  <td className='border px-2 py-1 text-center'>{currency} {round(outputCost, precision)}</td>
-                  <td className='border px-2 py-1 text-center'>{currency} {round(totalCost, precision)}</td>
+                  <td className='border px-2 py-1 text-center text-sm'>{provider.name}</td>
+                  <td className='border px-2 py-1 text-center text-sm'>{provider.model}</td>
+                  <td className='border px-2 py-1 text-center text-sm'>{round(inputCost, precision)}</td>
+                  <td className='border px-2 py-1 text-center text-sm'>{round(outputCost, precision)}</td>
+                  <td className='border px-2 py-1 text-center text-sm'>{round(totalCost, precision)}</td>
                 </tr>
               );
             })}
