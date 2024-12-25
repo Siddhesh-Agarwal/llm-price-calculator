@@ -13,6 +13,8 @@ type ProviderDetails = {
   price: Pricing
 }
 
+type Unit = 'Tokens' | 'Words' | 'Characters'
+
 const Providers: ProviderDetails[] = [
   {
     name: 'OpenAI',
@@ -174,8 +176,9 @@ function Footer() {
 }
 
 function App() {
-  const precision = 3;
-  const [inputUnit, setInputUnit] = useState<'Tokens' | 'Words' | 'Characters'>('Tokens');
+  const precision: number = 3;
+  const allowedCurrency: string[] = ['AED', 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'INR', 'JPY', 'SGD', 'USD', 'BNB', 'BTC', 'DOGE', 'ETH', 'SOL', 'USDT', 'XRP']
+  const [inputUnit, setInputUnit] = useState<Unit>('Tokens');
   const [inputTokens, setInputTokens] = useState<number>(0);
   const [outputTokens, setOutputTokens] = useState<number>(0);
   const [numberOfCalls, setNumberOfCalls] = useState<number>(1);
@@ -225,7 +228,7 @@ function App() {
 
         <div className="flex flex-row">
           {[
-            { id: 'currency', label: 'Currency', value: currency, setValue: setCurrency, options: ['AED', 'AUD', 'EUR', 'GBP', 'INR', 'JPY', 'USD', 'BTC', 'ETH', 'SOL'] },
+            { id: 'currency', label: 'Currency', value: currency, setValue: setCurrency, options: allowedCurrency },
             { id: 'input-unit', label: 'Input Unit', value: inputUnit, setValue: setInputUnit, options: ['Tokens', 'Words', 'Characters'] }
           ].map(({ id, label, value, setValue, options }) => (
             <fieldset key={id} className="relative p-2">
@@ -236,7 +239,7 @@ function App() {
                 id={id}
                 name={id}
                 value={value}
-                onChange={(e) => setValue(e.target.value as "Tokens" | "Words" | "Characters")}
+                onChange={(e) => setValue(e.target.value as Unit)}
                 className="rounded-sm border"
               >
                 {options.map((option) => (
