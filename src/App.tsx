@@ -88,18 +88,18 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'Claude',
-    model: '3.5 Sonnet',
-    price: {
-      inputCostInDollarsPerMillionTokens: 3.00,
-      outputCostInDollarsPerMillionTokens: 15.00,
-    },
-  },
-  {
-    name: 'Claude',
     model: '3.5 Haiku',
     price: {
       inputCostInDollarsPerMillionTokens: 0.80,
       outputCostInDollarsPerMillionTokens: 4.00,
+    },
+  },
+  {
+    name: 'Claude',
+    model: '3.5 Sonnet',
+    price: {
+      inputCostInDollarsPerMillionTokens: 3.00,
+      outputCostInDollarsPerMillionTokens: 15.00,
     },
   },
   {
@@ -202,13 +202,13 @@ function App() {
       <div className="container p-0">
         <div className="grid grid-cols-3 gap-4 md:gap-4">
           {[
-            { id: 'input-tokens', label: 'Input', value: inputTokens, setValue: setInputTokens, min: 0 },
-            { id: 'output-tokens', label: 'Output', value: outputTokens, setValue: setOutputTokens, min: 0 },
+            { id: 'input-tokens', label: `Input ${inputUnit}`, value: inputTokens, setValue: setInputTokens, min: 0 },
+            { id: 'output-tokens', label: `Output ${inputUnit}`, value: outputTokens, setValue: setOutputTokens, min: 0 },
             { id: 'call-count', label: 'Number of Calls', value: numberOfCalls, setValue: setNumberOfCalls, min: 1 }
           ].map(({ id, label, value, setValue, min }) => (
             <fieldset key={id} className="relative">
               <label htmlFor={id} className="text-gray-700">
-                {label} {inputUnit}
+                {label}
               </label>
               <input
                 type="number"
