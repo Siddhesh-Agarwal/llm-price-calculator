@@ -26,18 +26,10 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'OpenAI',
-    model: 'gpt-4',
+    model: 'gpt-4o-mini',
     price: {
-      inputCostInDollarsPerMillionTokens: 30.00,
-      outputCostInDollarsPerMillionTokens: 60.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'gpt-4-32k',
-    price: {
-      inputCostInDollarsPerMillionTokens: 60.00,
-      outputCostInDollarsPerMillionTokens: 120.00,
+      inputCostInDollarsPerMillionTokens: 0.15,
+      outputCostInDollarsPerMillionTokens: 0.60,
     },
   },
   {
@@ -58,18 +50,18 @@ const Providers: ProviderDetails[] = [
   },
   {
     name: 'OpenAI',
-    model: 'gpt-4o-mini',
+    model: 'gpt-4',
     price: {
-      inputCostInDollarsPerMillionTokens: 0.15,
-      outputCostInDollarsPerMillionTokens: 0.60,
+      inputCostInDollarsPerMillionTokens: 30.00,
+      outputCostInDollarsPerMillionTokens: 60.00,
     },
   },
   {
     name: 'OpenAI',
-    model: 'o1',
+    model: 'gpt-4-32k',
     price: {
-      inputCostInDollarsPerMillionTokens: 15.00,
-      outputCostInDollarsPerMillionTokens: 60.00,
+      inputCostInDollarsPerMillionTokens: 60.00,
+      outputCostInDollarsPerMillionTokens: 120.00,
     },
   },
   {
@@ -83,6 +75,14 @@ const Providers: ProviderDetails[] = [
   {
     name: 'OpenAI',
     model: 'o1-preview',
+    price: {
+      inputCostInDollarsPerMillionTokens: 15.00,
+      outputCostInDollarsPerMillionTokens: 60.00,
+    },
+  },
+  {
+    name: 'OpenAI',
+    model: 'o1',
     price: {
       inputCostInDollarsPerMillionTokens: 15.00,
       outputCostInDollarsPerMillionTokens: 60.00,
