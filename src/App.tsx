@@ -154,11 +154,11 @@ function round(number: number, precision: number): string {
 
 function Header() {
   return (
-    <header className="bg-blue-200 w-full py-2 md:py-4 mb-4 flex flex-row justify-between px-4 md:px-6">
-      <h1 className='font-bold text-2xl'>
-        LLM Price Calculator
+    <header className="bg-slate-200 dark:bg-slate-800 w-full py-2 md:py-4 mb-4 flex flex-row justify-between px-4 md:px-6">
+      <h1 className='font-bold text-2xl text-gray-900 dark:text-gray-100'>
+        LLMPrice.fyi
       </h1>
-      <a href="https://github.com/Siddhesh-Agarwal/llm-price-calculator" target="_blank" rel="noreferrer" className='hover:bg-blue-300 py-1 px-2 rounded-md'>
+      <a href="https://github.com/Siddhesh-Agarwal/llm-price-calculator" target="_blank" rel="noreferrer" className='hover:bg-slate-300 dark:hover:bg-slate-700 py-1 px-2 rounded-md'>
         <img src={GitHubIcon} alt="GitHub" className='w-6 h-6' />
       </a>
     </header>
@@ -167,9 +167,9 @@ function Header() {
 
 function Footer() {
   return (
-    <footer className="bg-blue-200 text-center w-full py-4 mt-4">
-      <h1 className='font-bold'>
-        Made by <a href="https://github.com/Siddhesh-Agarwal" target="_blank" rel="noreferrer" className='underline text-blue-600'>Siddhesh Agarwal</a> with <img src={HeartIcon} alt="Heart" className='w-4 h-4 inline' />
+    <footer className="bg-slate-200 dark:bg-slate-800 text-center w-full py-4 mt-4">
+      <h1 className='font-bold text-gray-900 dark:text-gray-100'>
+      Made by <a href="https://github.com/Siddhesh-Agarwal" target="_blank" rel="noreferrer" className='underline text-blue-600'>Siddhesh Agarwal</a> with <img src={HeartIcon} alt="Heart" className='w-4 h-4 inline' />
       </h1>
     </footer>
   )
@@ -205,10 +205,13 @@ function App() {
 
   // create an input field for input tokens and output tokens and calculate the cost for each provider 
   return (
-    <div className='min-h-screen flex flex-col items-center justify-between'>
+    <div className='min-h-screen flex flex-col items-center justify-between bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100'>
       <Header />
 
       <div className="container p-0">
+        <p className="mb-4 text-gray-900 dark:text-gray-300 text-justify">
+          This calculator helps you estimate the cost of using various language models. It calculates the cost based on the number of input and output tokensalong with the number of calls you make. The cost is calculated in the currency or crypto of your choice. The input cost, output cost, and total cost are calculated for each provider.
+        </p>
         <div className="grid grid-cols-3 gap-4 md:gap-4">
           {[
             { id: 'input-tokens', label: `Input ${inputUnit}`, value: inputTokens, setValue: setInputTokens, min: 0 },
@@ -216,7 +219,7 @@ function App() {
             { id: 'call-count', label: 'Number of Calls', value: numberOfCalls, setValue: setNumberOfCalls, min: 1 }
           ].map(({ id, label, value, setValue, min }) => (
             <fieldset key={id} className="relative">
-              <label htmlFor={id} className="text-gray-700">
+              <label htmlFor={id} className="text-gray-700 dark:text-gray-300">
                 {label}
               </label>
               <input
@@ -225,7 +228,7 @@ function App() {
                 value={value}
                 onChange={(e) => setValue(Math.floor(Number(e.target.value)))}
                 min={min}
-                className="rounded-lg flex-1 appearance-none border border-gray-300 w-full py-1 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono"
+                className="rounded-lg flex-1 appearance-none border border-slate-300 dark:border-slate-700 w-full py-1 px-4 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono"
                 name={id}
               />
             </fieldset>
@@ -238,7 +241,7 @@ function App() {
             { id: 'input-unit', label: 'Input Unit', value: inputUnit, setValue: setInputUnit, options: ['Tokens', 'Words', 'Characters'] }
           ].map(({ id, label, value, setValue, options }) => (
             <fieldset key={id} className="relative p-2">
-              <label htmlFor={id} className="text-gray-700 mr-1">
+              <label htmlFor={id} className="text-gray-700 dark:text-gray-300 mr-1">
                 {label}
               </label>
               <select
@@ -246,7 +249,7 @@ function App() {
                 name={id}
                 value={value}
                 onChange={(e) => setValue(e.target.value as Unit)}
-                className="rounded-sm border"
+                className="rounded-sm border dark:border-slate-700 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300"
               >
                 {options.map((option) => (
                   <option key={option} value={option}>
@@ -258,11 +261,11 @@ function App() {
           ))}
         </div>
 
-        <table className='mt-4 w-full table-fixed border rounded-lg mb-2'>
+        <table className='mt-4 w-full table-fixed border mb-2'>
           <thead>
             <tr>
               {['Provider', 'Model', `Input Cost (${currency})`, `Output Cost (${currency})`, 'Total Cost'].map((header) => (
-                <th key={header} className='font-bold border bg-gray-50 border-black'>{header}</th>
+                <th key={header} className='font-bold border bg-slate-50 dark:bg-slate-800 border-black dark:border-slate-700'>{header}</th>
               ))}
             </tr>
           </thead>
@@ -274,11 +277,11 @@ function App() {
               const totalCost = inputCost + outputCost;
               return (
                 <tr key={index}>
-                  <td className='border px-2 py-1 text-center text-sm'>{provider.name}</td>
-                  <td className='border px-2 py-1 text-center text-sm'>{provider.model}</td>
-                  <td className='border px-2 py-1 text-center text-sm'>{round(inputCost, precision)}</td>
-                  <td className='border px-2 py-1 text-center text-sm'>{round(outputCost, precision)}</td>
-                  <td className='border px-2 py-1 text-center text-sm'>{round(totalCost, precision)}</td>
+                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{provider.name}</td>
+                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{provider.model}</td>
+                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(inputCost, precision)}</td>
+                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(outputCost, precision)}</td>
+                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(totalCost, precision)}</td>
                 </tr>
               );
             })}
