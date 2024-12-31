@@ -15,137 +15,6 @@ type ProviderDetails = {
 
 type Unit = 'Tokens' | 'Words' | 'Characters'
 
-const Providers: ProviderDetails[] = [
-  {
-    name: 'OpenAI',
-    model: 'gpt-3.5-turbo',
-    price: {
-      inputCostInDollarsPerMillionTokens: 1.00,
-      outputCostInDollarsPerMillionTokens: 2.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'gpt-4o-mini',
-    price: {
-      inputCostInDollarsPerMillionTokens: 0.15,
-      outputCostInDollarsPerMillionTokens: 0.60,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'gpt-4o',
-    price: {
-      inputCostInDollarsPerMillionTokens: 2.50,
-      outputCostInDollarsPerMillionTokens: 10.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'gpt-4o-2024-05-13',
-    price: {
-      inputCostInDollarsPerMillionTokens: 5.00,
-      outputCostInDollarsPerMillionTokens: 20.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'gpt-4',
-    price: {
-      inputCostInDollarsPerMillionTokens: 30.00,
-      outputCostInDollarsPerMillionTokens: 60.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'gpt-4-32k',
-    price: {
-      inputCostInDollarsPerMillionTokens: 60.00,
-      outputCostInDollarsPerMillionTokens: 120.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'o1-mini',
-    price: {
-      inputCostInDollarsPerMillionTokens: 3.00,
-      outputCostInDollarsPerMillionTokens: 12.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'o1-preview',
-    price: {
-      inputCostInDollarsPerMillionTokens: 15.00,
-      outputCostInDollarsPerMillionTokens: 60.00,
-    },
-  },
-  {
-    name: 'OpenAI',
-    model: 'o1',
-    price: {
-      inputCostInDollarsPerMillionTokens: 15.00,
-      outputCostInDollarsPerMillionTokens: 60.00,
-    },
-  },
-  {
-    name: 'Claude',
-    model: '3.5 Haiku',
-    price: {
-      inputCostInDollarsPerMillionTokens: 0.80,
-      outputCostInDollarsPerMillionTokens: 4.00,
-    },
-  },
-  {
-    name: 'Claude',
-    model: '3.5 Sonnet',
-    price: {
-      inputCostInDollarsPerMillionTokens: 3.00,
-      outputCostInDollarsPerMillionTokens: 15.00,
-    },
-  },
-  {
-    name: 'Claude',
-    model: '3 Opus',
-    price: {
-      inputCostInDollarsPerMillionTokens: 15.00,
-      outputCostInDollarsPerMillionTokens: 75.00,
-    },
-  },
-  {
-    name: 'Google',
-    model: '1.0 Pro',
-    price: {
-      inputCostInDollarsPerMillionTokens: 0.50,
-      outputCostInDollarsPerMillionTokens: 1.50,
-    }
-  },
-  {
-    name: 'Google',
-    model: '1.5 Flash-8b',
-    price: {
-      inputCostInDollarsPerMillionTokens: 0.0375,
-      outputCostInDollarsPerMillionTokens: 0.15,
-    }
-  },
-  {
-    name: 'Google',
-    model: '1.5 Flash',
-    price: {
-      inputCostInDollarsPerMillionTokens: 0.075,
-      outputCostInDollarsPerMillionTokens: 0.30,
-    }
-  },
-  {
-    name: 'Google',
-    model: '1.5 Pro',
-    price: {
-      inputCostInDollarsPerMillionTokens: 1.25,
-      outputCostInDollarsPerMillionTokens: 5.00,
-    }
-  },
-];
-
 function round(number: number, precision: number): string {
   const pow = Math.pow(10, precision);
   const ans = Math.round((number / 1e6) * pow) / pow;
@@ -178,9 +47,11 @@ function Footer() {
 function App() {
   const precision: number = 3;
   const allowedCurrency: string[] = ['AED', 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'INR', 'JPY', 'SGD', 'USD', 'BNB', 'BTC', 'DOGE', 'ETH', 'SOL', 'USDT', 'XRP']
-  const [inputUnit, setInputUnit] = useState<Unit>('Tokens');
-  const [inputTokens, setInputTokens] = useState<number>(0);
-  const [outputTokens, setOutputTokens] = useState<number>(0);
+  
+  const [providers, setProviders] = useState<ProviderDetails[]>([]);
+  const [unit, setUnit] = useState<Unit>('Tokens');
+  const [inputUnits, setInputUnits] = useState<number>(0);
+  const [outputUnits, setOutputUnits] = useState<number>(0);
   const [numberOfCalls, setNumberOfCalls] = useState<number>(1);
   const [currency, setCurrency] = useState<string>('USD');
   const [conversionRate, setConversionRate] = useState<number>(1);
@@ -203,6 +74,14 @@ function App() {
     }
   }, [currency]);
 
+  useEffect(() => {
+    fetch("https://api.llmprice.fyi/") // Hail Golang API
+      .then((response) => response.json())
+      .then((data) => {
+        setProviders(data as ProviderDetails[]);
+      })
+  }, []);
+
   // create an input field for input tokens and output tokens and calculate the cost for each provider 
   return (
     <div className='min-h-screen flex flex-col items-center justify-between bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100'>
@@ -214,8 +93,8 @@ function App() {
         </p>
         <div className="grid grid-cols-3 gap-4 md:gap-4 p-2">
           {[
-            { id: 'input-tokens', label: `Input ${inputUnit}`, value: inputTokens, setValue: setInputTokens, min: 0 },
-            { id: 'output-tokens', label: `Output ${inputUnit}`, value: outputTokens, setValue: setOutputTokens, min: 0 },
+            { id: 'input-tokens', label: `Input ${unit}`, value: inputUnits, setValue: setInputUnits, min: 0 },
+            { id: 'output-tokens', label: `Output ${unit}`, value: outputUnits, setValue: setOutputUnits, min: 0 },
             { id: 'call-count', label: 'Number of Calls', value: numberOfCalls, setValue: setNumberOfCalls, min: 1 }
           ].map(({ id, label, value, setValue, min }) => (
             <fieldset key={id} className="relative">
@@ -238,7 +117,7 @@ function App() {
         <div className="flex flex-row">
           {[
             { id: 'currency', label: 'Currency', value: currency, setValue: setCurrency, options: allowedCurrency },
-            { id: 'input-unit', label: 'Input Unit', value: inputUnit, setValue: setInputUnit, options: ['Tokens', 'Words', 'Characters'] }
+            { id: 'input-unit', label: 'Input Unit', value: unit, setValue: setUnit, options: ['Tokens', 'Words', 'Characters'] }
           ].map(({ id, label, value, setValue, options }) => (
             <fieldset key={id} className="relative p-2">
               <label htmlFor={id} className="text-gray-700 dark:text-gray-300 mr-1">
@@ -270,10 +149,10 @@ function App() {
             </tr>
           </thead>
           <tbody className='font-mono'>
-            {Providers.map((provider, index) => {
-              const numberOfTokensPerUnit = inputUnit === 'Words' ? 1.333 : inputUnit === 'Characters' ? 0.400 : 1;
-              const inputCost = provider.price.inputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * inputTokens * conversionRate * numberOfCalls;
-              const outputCost = provider.price.outputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * outputTokens * conversionRate * numberOfCalls;
+            {providers.map((provider: ProviderDetails, index: number) => {
+              const numberOfTokensPerUnit = unit === 'Words' ? 1.333 : unit === 'Characters' ? 0.400 : 1;
+              const inputCost = provider.price.inputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * inputUnits * conversionRate * numberOfCalls;
+              const outputCost = provider.price.outputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * outputUnits * conversionRate * numberOfCalls;
               const totalCost = inputCost + outputCost;
               return (
                 <tr key={index}>
