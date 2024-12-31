@@ -17,6 +17,7 @@ A simple no-nonsense price calculator for LLM providers like OpenAI, Claude, and
   - [X] Characters
 - [x] Currency Conversion
 - [x] Currency API Response Caching
+- [x] Dynamic Pricing via API
 
 ## Tech Stack
 
