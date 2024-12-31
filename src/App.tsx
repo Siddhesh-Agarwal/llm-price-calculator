@@ -209,10 +209,10 @@ function App() {
       <Header />
 
       <div className="container p-0">
-        <p className="mb-4 text-gray-900 dark:text-gray-300 text-justify">
+        <p className="mb-4 text-gray-900 dark:text-gray-300 text-justify p-2">
           This calculator helps you estimate the cost of using various language models. It calculates the cost based on the number of input and output tokensalong with the number of calls you make. The cost is calculated in the currency or crypto of your choice. The input cost, output cost, and total cost are calculated for each provider.
         </p>
-        <div className="grid grid-cols-3 gap-4 md:gap-4">
+        <div className="grid grid-cols-3 gap-4 md:gap-4 p-2">
           {[
             { id: 'input-tokens', label: `Input ${inputUnit}`, value: inputTokens, setValue: setInputTokens, min: 0 },
             { id: 'output-tokens', label: `Output ${inputUnit}`, value: outputTokens, setValue: setOutputTokens, min: 0 },
