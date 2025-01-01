@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import GitHubIcon from "./asset/github.svg"
 import HeartIcon from "./asset/heart.svg"
 
+// Types
 type Pricing = {
   inputCostInDollarsPerMillionTokens: number,
   outputCostInDollarsPerMillionTokens: number
@@ -15,18 +16,26 @@ type ProviderDetails = {
 
 type Unit = 'Tokens' | 'Words' | 'Characters'
 
+type IOUnits = {
+  inputUnits: number,
+  outputUnits: number
+  numberOfCalls: number
+}
+
+// Helper functions
 function round(number: number, precision: number): string {
   const pow = Math.pow(10, precision);
   const ans = Math.round((number / 1e6) * pow) / pow;
   return ans.toFixed(precision);
 }
 
+// Components
 function Header() {
   return (
     <header className="bg-slate-200 dark:bg-slate-800 w-full py-2 md:py-4 mb-4 flex flex-row justify-between px-4 md:px-6">
-      <h1 className='font-bold text-2xl text-gray-900 dark:text-gray-100'>
+      <a className='font-bold text-2xl text-gray-900 dark:text-gray-100' href='https://llmprice.fyi/'>
         LLMPrice.fyi
-      </h1>
+      </a>
       <a href="https://github.com/Siddhesh-Agarwal/llm-price-calculator" target="_blank" rel="noreferrer" className='hover:bg-slate-300 dark:hover:bg-slate-700 py-1 px-2 rounded-md'>
         <img src={GitHubIcon} alt="GitHub" className='w-6 h-6' />
       </a>
@@ -38,21 +47,55 @@ function Footer() {
   return (
     <footer className="bg-slate-200 dark:bg-slate-800 text-center w-full py-4 mt-4">
       <h1 className='font-bold text-gray-900 dark:text-gray-100'>
-      Made by <a href="https://github.com/Siddhesh-Agarwal" target="_blank" rel="noreferrer" className='underline text-blue-600'>Siddhesh Agarwal</a> with <img src={HeartIcon} alt="Heart" className='w-4 h-4 inline' />
+        Made by <a href="https://github.com/Siddhesh-Agarwal" target="_blank" rel="noreferrer" className='underline text-blue-600'>Siddhesh Agarwal</a> with <img src={HeartIcon} alt="Heart" className='w-4 h-4 inline' />
       </h1>
     </footer>
   )
 }
 
+function PriceTable({ providers, unit, currency, ioUnits, conversionRate, precision }: { providers: ProviderDetails[], unit: Unit, currency: string, ioUnits: IOUnits, conversionRate: number, precision: number }) {
+  const { inputUnits, outputUnits, numberOfCalls } = ioUnits;
+  return (
+    <table className='mt-4 w-full table-fixed border mb-2'>
+      <thead>
+        <tr>
+          {['Provider', 'Model', `Input Cost (${currency})`, `Output Cost (${currency})`, 'Total Cost'].map((header) => (
+            <th key={header} className='font-bold border bg-slate-50 dark:bg-slate-800 border-black dark:border-slate-700'>{header}</th>
+          ))}
+        </tr>
+      </thead>
+      <tbody className='font-mono'>
+        {providers.map((provider: ProviderDetails, index: number) => {
+          const numberOfTokensPerUnit = unit === 'Words' ? 1.333 : unit === 'Characters' ? 0.400 : 1;
+          const inputCost = provider.price.inputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * inputUnits * conversionRate * numberOfCalls;
+          const outputCost = provider.price.outputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * outputUnits * conversionRate * numberOfCalls;
+          const totalCost = inputCost + outputCost;
+          return (
+            <tr key={index}>
+              <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{provider.name}</td>
+              <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{provider.model}</td>
+              <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(inputCost, precision)}</td>
+              <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(outputCost, precision)}</td>
+              <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(totalCost, precision)}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  )
+}
+
+
+
 function App() {
+  // constants
   const precision: number = 3;
   const allowedCurrency: string[] = ['AED', 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'INR', 'JPY', 'SGD', 'USD', 'BNB', 'BTC', 'DOGE', 'ETH', 'SOL', 'USDT', 'XRP']
-  
+
+  // state variables
   const [providers, setProviders] = useState<ProviderDetails[]>([]);
   const [unit, setUnit] = useState<Unit>('Tokens');
-  const [inputUnits, setInputUnits] = useState<number>(0);
-  const [outputUnits, setOutputUnits] = useState<number>(0);
-  const [numberOfCalls, setNumberOfCalls] = useState<number>(1);
+  const [ioUnits, setIOUnits] = useState<IOUnits>({ inputUnits: 0, outputUnits: 0, numberOfCalls: 1 });
   const [currency, setCurrency] = useState<string>('USD');
   const [conversionRate, setConversionRate] = useState<number>(1);
 
@@ -61,25 +104,34 @@ function App() {
       setConversionRate(1);
     } else {
       const storedData = sessionStorage.getItem('currencyData');
-      let data = (storedData) ? JSON.parse(storedData) : null;
+      const data = (storedData) ? JSON.parse(storedData) : null;
       if (data === null) {
-        data = fetch("https://latest.currency-api.pages.dev/v1/currencies/usd.json")
-          .then((response) => response.json())
-          .then((data) => {
-            sessionStorage.setItem('currencyData', JSON.stringify(data));
-            return data;
-          });
+        console.error("Currency data not found in session storage");
+        return;
       }
       setConversionRate(data["usd"][currency.toLowerCase()]);
     }
   }, [currency]);
 
+  async function fetchData() {
+    try {
+      const [providersResponse, currencyResponse] = await Promise.all([
+        fetch("https://api.llmprice.fyi/"), // Hail Golang API
+        fetch("https://latest.currency-api.pages.dev/v1/currencies/usd.json")
+      ]);
+
+      const providersData = await providersResponse.json();
+      setProviders(providersData as ProviderDetails[]);
+
+      const currencyData = await currencyResponse.json();
+      sessionStorage.setItem('currencyData', JSON.stringify(currencyData));
+    } catch (error) {
+      console.error("Error prefetching data:", error);
+    }
+  }
+
   useEffect(() => {
-    fetch("https://api.llmprice.fyi/") // Hail Golang API
-      .then((response) => response.json())
-      .then((data) => {
-        setProviders(data as ProviderDetails[]);
-      })
+    fetchData();
   }, []);
 
   // create an input field for input tokens and output tokens and calculate the cost for each provider 
@@ -93,9 +145,27 @@ function App() {
         </p>
         <div className="grid grid-cols-3 gap-4 md:gap-4 p-2">
           {[
-            { id: 'input-tokens', label: `Input ${unit}`, value: inputUnits, setValue: setInputUnits, min: 0 },
-            { id: 'output-tokens', label: `Output ${unit}`, value: outputUnits, setValue: setOutputUnits, min: 0 },
-            { id: 'call-count', label: 'Number of Calls', value: numberOfCalls, setValue: setNumberOfCalls, min: 1 }
+            {
+              id: 'input-tokens',
+              label: `Input ${unit}`,
+              value: ioUnits.inputUnits,
+              setValue: (val: number) => setIOUnits({ ...ioUnits, inputUnits: val }),
+              min: 0
+            },
+            {
+              id: 'output-tokens',
+              label: `Output ${unit}`,
+              value: ioUnits.outputUnits,
+              setValue: (val: number) => setIOUnits({ ...ioUnits, outputUnits: val }),
+              min: 0
+            },
+            {
+              id: 'call-count',
+              label: 'Number of Calls',
+              value: ioUnits.numberOfCalls,
+              setValue: (val: number) => setIOUnits({ ...ioUnits, numberOfCalls: val }),
+              min: 1
+            }
           ].map(({ id, label, value, setValue, min }) => (
             <fieldset key={id} className="relative">
               <label htmlFor={id} className="text-gray-700 dark:text-gray-300">
@@ -140,32 +210,7 @@ function App() {
           ))}
         </div>
 
-        <table className='mt-4 w-full table-fixed border mb-2'>
-          <thead>
-            <tr>
-              {['Provider', 'Model', `Input Cost (${currency})`, `Output Cost (${currency})`, 'Total Cost'].map((header) => (
-                <th key={header} className='font-bold border bg-slate-50 dark:bg-slate-800 border-black dark:border-slate-700'>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className='font-mono'>
-            {providers.map((provider: ProviderDetails, index: number) => {
-              const numberOfTokensPerUnit = unit === 'Words' ? 1.333 : unit === 'Characters' ? 0.400 : 1;
-              const inputCost = provider.price.inputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * inputUnits * conversionRate * numberOfCalls;
-              const outputCost = provider.price.outputCostInDollarsPerMillionTokens * numberOfTokensPerUnit * outputUnits * conversionRate * numberOfCalls;
-              const totalCost = inputCost + outputCost;
-              return (
-                <tr key={index}>
-                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{provider.name}</td>
-                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{provider.model}</td>
-                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(inputCost, precision)}</td>
-                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(outputCost, precision)}</td>
-                  <td className='border border-slate-300 dark:border-slate-700 dark:text-gray-200 px-2 py-1 text-center text-sm'>{round(totalCost, precision)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        {providers.length !== 0 && <PriceTable providers={providers} unit={unit} currency={currency} ioUnits={ioUnits} conversionRate={conversionRate} precision={precision} />}
       </div>
 
       <Footer />
