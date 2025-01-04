@@ -98,6 +98,7 @@ function App() {
   const [ioUnits, setIOUnits] = useState<IOUnits>({ inputUnits: 0, outputUnits: 0, numberOfCalls: 1 });
   const [currency, setCurrency] = useState<string>('USD');
   const [conversionRate, setConversionRate] = useState<number>(1);
+  const [tableDataLoading, setTableDataLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (currency === 'USD') {
@@ -114,6 +115,7 @@ function App() {
   }, [currency]);
 
   async function fetchData() {
+    setTableDataLoading(true);
     try {
       const [providersResponse, currencyResponse] = await Promise.all([
         fetch("https://api.llmprice.fyi/"), // Hail Golang API
@@ -125,8 +127,10 @@ function App() {
 
       const currencyData = await currencyResponse.json();
       sessionStorage.setItem('currencyData', JSON.stringify(currencyData));
+      setTableDataLoading(false);
     } catch (error) {
       console.error("Error prefetching data:", error);
+      setTableDataLoading(false);
     }
   }
 
@@ -141,7 +145,7 @@ function App() {
 
       <div className="container p-0">
         <p className="mb-4 text-gray-900 dark:text-gray-300 text-justify p-2">
-          This calculator helps you estimate the cost of using various language models. It calculates the cost based on the number of input and output tokensalong with the number of calls you make. The cost is calculated in the currency or crypto of your choice. The input cost, output cost, and total cost are calculated for each provider.
+          This calculator helps you estimate the cost of using various language models. It calculates the cost based on the number of input and output tokens along with the number of calls you make. The cost is calculated in the currency or crypto of your choice. The input cost, output cost, and total cost are calculated for each provider.
         </p>
         <div className="grid grid-cols-3 gap-4 md:gap-4 p-2">
           {[
@@ -177,6 +181,7 @@ function App() {
                 value={value}
                 onChange={(e) => setValue(Math.floor(Number(e.target.value)))}
                 min={min}
+                placeholder='0'
                 className="rounded-lg flex-1 appearance-none border border-slate-300 dark:border-slate-700 w-full py-1 px-4 bg-white dark:bg-slate-800 text-gray-700 dark:text-gray-300 placeholder-gray-400 dark:placeholder-gray-500 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent font-mono"
                 name={id}
               />
@@ -210,7 +215,9 @@ function App() {
           ))}
         </div>
 
-        {providers.length !== 0 && <PriceTable providers={providers} unit={unit} currency={currency} ioUnits={ioUnits} conversionRate={conversionRate} precision={precision} />}
+        {tableDataLoading ?
+          <div className='text-center'><p>Loading...</p></div> :
+          providers.length !== 0 && <PriceTable providers={providers} unit={unit} currency={currency} ioUnits={ioUnits} conversionRate={conversionRate} precision={precision} />}
       </div>
 
       <Footer />
