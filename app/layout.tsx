@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider } from "next-themes"
+import Providers from "./providers";
+import Footer from "@/components/footer";
 import "./globals.css";
 
 
@@ -54,13 +55,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-50 dark:bg-slate-800`}
       >
-        <ThemeProvider
-          attribute="class"
-          enableSystem
-          enableColorScheme
-        >
+        <Providers>
           {children}
-        </ThemeProvider>
+          <Footer />
+        </Providers>
       </body>
     </html>
   );
