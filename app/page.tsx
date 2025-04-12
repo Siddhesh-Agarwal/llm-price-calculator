@@ -80,6 +80,7 @@ const fetchProviders = async (): Promise<ProviderDetails[]> => {
     return response.json();
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const fetchCurrencyRates = async (): Promise<any> => {
     const response = await fetch("https://latest.currency-api.pages.dev/v1/currencies/usd.json", { cache: "force-cache" });
     if (!response.ok) throw new Error('Failed to fetch currency rates');
