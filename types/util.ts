@@ -19,4 +19,28 @@ type IOUnits = {
     numberOfCalls: number
 }
 
-export type { Provider, Unit, Pricing, ProviderDetails, IOUnits }
+interface PriceTableProps {
+    providers: ProviderDetails[];
+    unit: Unit;
+    currency: string;
+    ioUnits: IOUnits;
+    conversionRate: number;
+}
+
+interface NumberInputProps {
+    id: string;
+    label: string;
+    value: number;
+    onChange: (value: number) => void;
+    min: number;
+}
+
+interface SelectFieldProps {
+    id: string;
+    label: string;
+    value: string;
+    onChange: (value: string) => void;
+    options: readonly string[];
+}
+
+export type { Provider, Unit, Pricing, ProviderDetails, IOUnits, PriceTableProps, NumberInputProps, SelectFieldProps }
