@@ -1,25 +1,23 @@
-type Provider = 'OpenAI' | 'Claude' | 'Google'
-type Unit = 'Tokens' | 'Words' | 'Characters'
+type Provider = "OpenAI" | "Claude" | "Google";
+type Unit = "Tokens" | "Words" | "Characters";
 type Pricing = {
-    inputCostInDollarsPerMillionTokens: number
-    outputCostInDollarsPerMillionTokens: number
-}
-
+    inputCostInDollarsPerMillionTokens: number;
+    outputCostInDollarsPerMillionTokens: number;
+};
 
 type ProviderDetails = {
-    name: Provider
-    model: string
-    price: Pricing
-}
-
+    name: Provider;
+    model: string;
+    price: Pricing;
+};
 
 type IOUnits = {
-    inputUnits: number
-    outputUnits: number
-    numberOfCalls: number
-}
+    inputUnits: number;
+    outputUnits: number;
+    numberOfCalls: number;
+};
 
-interface PriceTableProps {
+type PriceTableProps = {
     providers: ProviderDetails[];
     unit: Unit;
     currency: string;
@@ -43,4 +41,22 @@ interface SelectFieldProps {
     options: readonly string[];
 }
 
-export type { Provider, Unit, Pricing, ProviderDetails, IOUnits, PriceTableProps, NumberInputProps, SelectFieldProps }
+type PriceTableFields = {
+    provider: Provider;
+    model: string;
+    inputCost: string;
+    outputCost: string;
+    totalCost: string;
+}
+
+export type {
+    Provider,
+    Unit,
+    Pricing,
+    ProviderDetails,
+    IOUnits,
+    PriceTableProps,
+    NumberInputProps,
+    SelectFieldProps,
+    PriceTableFields,
+};

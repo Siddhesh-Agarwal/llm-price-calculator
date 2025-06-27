@@ -1,11 +1,23 @@
 import { SelectFieldProps } from "@/types/util";
 import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "./ui/select";
 
-export default function SelectField({ id, label, value, onChange, options }: SelectFieldProps) {
+export default function SelectField({
+    id,
+    label,
+    value,
+    onChange,
+    options,
+}: SelectFieldProps) {
     return (
         <fieldset className="relative p-2">
-            <Label htmlFor={id} className="text-gray-700 dark:text-gray-300 mr-1">
+            <Label htmlFor={id} className="px-1 py-0.5">
                 {label}
             </Label>
             <Select value={value} onValueChange={onChange}>
@@ -21,5 +33,5 @@ export default function SelectField({ id, label, value, onChange, options }: Sel
                 </SelectContent>
             </Select>
         </fieldset>
-    )
+    );
 }

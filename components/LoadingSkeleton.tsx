@@ -7,5 +7,5 @@ export default function LoadingSkeleton() {
                 <Skeleton key={i} className="h-6 w-full rounded" />
             ))}
         </div>
-    )
+    );
 }
