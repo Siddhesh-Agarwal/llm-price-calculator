@@ -1,25 +1,41 @@
 "use client";
 
-import { useMemo, useState, useCallback } from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { IOUnits, PriceTableProps, ProviderDetails, Unit } from "@/types/util";
-import { dehydrate, HydrationBoundary, QueryClient, useQuery } from "@tanstack/react-query";
-import Header from '@/components/Header';
-import LoadingSkeleton from '@/components/LoadingSkeleton';
-import SelectField from '@/components/SelectField';
-import NumberInput from '@/components/NumberInput';
+import { useMemo, useState, useCallback } from "react";
+import type {
+    IOUnits,
+    PriceTableFields,
+    PriceTableProps,
+    ProviderDetails,
+    Unit,
+} from "@/types/util";
+import {
+    dehydrate,
+    HydrationBoundary,
+    QueryClient,
+    useQuery,
+} from "@tanstack/react-query";
+import Header from "@/components/Header";
+import LoadingSkeleton from "@/components/LoadingSkeleton";
+import SelectField from "@/components/SelectField";
+import NumberInput from "@/components/NumberInput";
+import PriceTableLayout from "@/components/PriceTableLayout";
 
 // Constants - moved outside component to prevent recreation
 const PRECISION = 3;
-const ALLOWED_CURRENCIES = ['AED', 'AUD', 'CAD', 'CNY', 'EUR', 'GBP', 'HKD', 'INR', 'JPY', 'SGD', 'USD', 'BNB', 'BTC', 'DOGE', 'ETH', 'SOL', 'USDT', 'XRP'] as const;
-const UNIT_OPTIONS = ['Tokens', 'Words', 'Characters'] as const;
-const TABLE_HEADERS = ['Provider', 'Model', 'Input Cost', 'Output Cost', 'Total Cost'] as const;
+const UNIT_OPTIONS = ["Tokens", "Words", "Characters"] as const;
+const TABLE_HEADERS = [
+    "Provider",
+    "Model",
+    "Input Cost",
+    "Output Cost",
+    "Total Cost",
+];
 
 // Token conversion rates - precomputed constants
 const TOKEN_CONVERSION_RATES = {
-    'Words': 1.333,
-    'Characters': 0.400,
-    'Tokens': 1
+    Words: 1.333,
+    Characters: 0.4,
+    Tokens: 1,
 } as const;
 
 // Optimized helper function with memoization potential
@@ -29,16 +45,23 @@ const formatCost = (cost: number, precision: number): string => {
 };
 
 // API functions - moved outside to prevent recreation
-const fetchProviders = async (): Promise<ProviderDetails[]> => {
-    const response = await fetch("https://api.llmprice.fyi/", { cache: "force-cache" });
-    if (!response.ok) throw new Error('Failed to fetch providers');
-    return response.json();
+async function fetchProviders(): Promise<ProviderDetails[]> {
+    const response = await fetch("/api", { cache: "force-cache" });
+    if (!response.ok) throw new Error("Failed to fetch providers");
+    const json = await response.json();
+    console.log("Price Info", json);
+    return json;
 };
 
-const fetchCurrencyRates = async () => {
-    const response = await fetch("https://latest.currency-api.pages.dev/v1/currencies/usd.json", { cache: "force-cache" });
-    if (!response.ok) throw new Error('Failed to fetch currency rates');
-    return response.json();
+async function fetchCurrencyRates() {
+    const response = await fetch(
+        "https://latest.currency-api.pages.dev/v1/currencies/usd.json",
+        { cache: "force-cache" }
+    );
+    if (!response.ok) throw new Error("Failed to fetch currency rates");
+    const json = await response.json();
+    console.log("Currency Info", json);
+    return json;
 };
 
 // Singleton query client
@@ -47,91 +70,72 @@ const queryClient = new QueryClient({
         queries: {
             staleTime: 5 * 60 * 1000, // 5 minutes
             gcTime: 10 * 60 * 1000, // 10 minutes
+            refetchOnWindowFocus: false,
         },
     },
 });
 
-
-const PriceTable = ({ providers, unit, currency, ioUnits, conversionRate }: PriceTableProps) => {
+const PriceTable = ({
+    providers,
+    unit,
+    currency,
+    ioUnits,
+    conversionRate,
+}: PriceTableProps) => {
     const { inputUnits, outputUnits, numberOfCalls } = ioUnits;
 
     // Memoize expensive calculations
-    const tableData = useMemo(() => {
+    const tableData: PriceTableFields[] = useMemo(() => {
+        if (!providers || providers.length === 0) return [];
+
         const tokensPerUnit = TOKEN_CONVERSION_RATES[unit];
 
         return providers.map((provider) => {
             const baseCostMultiplier = tokensPerUnit * conversionRate * numberOfCalls;
-            const inputCost = provider.price.inputCostInDollarsPerMillionTokens * inputUnits * baseCostMultiplier;
-            const outputCost = provider.price.outputCostInDollarsPerMillionTokens * outputUnits * baseCostMultiplier;
+            const inputCost =
+                provider.price.inputCostInDollarsPerMillionTokens *
+                inputUnits *
+                baseCostMultiplier;
+            const outputCost =
+                provider.price.outputCostInDollarsPerMillionTokens *
+                outputUnits *
+                baseCostMultiplier;
 
             return {
                 provider: provider.name,
                 model: provider.model,
                 inputCost: formatCost(inputCost, PRECISION),
                 outputCost: formatCost(outputCost, PRECISION),
-                totalCost: formatCost(inputCost + outputCost, PRECISION)
+                totalCost: formatCost(inputCost + outputCost, PRECISION),
             };
         });
     }, [providers, unit, inputUnits, outputUnits, numberOfCalls, conversionRate]);
 
     return (
-        <Table className='mt-4 w-full table-fixed border mb-2'>
-            <TableHeader>
-                <TableRow>
-                    {TABLE_HEADERS.map((header) => (
-                        <TableHead
-                            key={header}
-                            className='font-bold border bg-slate-300 dark:bg-slate-700 text-center'
-                        >
-                            {header === 'Input Cost' || header === 'Output Cost' || header === 'Total Cost'
-                                ? `${header} (${currency})`
-                                : header
-                            }
-                        </TableHead>
-                    ))}
-                </TableRow>
-            </TableHeader>
-            <TableBody className='font-mono text-sm'>
-                {tableData.map((row, index) => (
-                    <TableRow key={`${row.provider}-${row.model}-${index}`}>
-                        <TableCell className='border border-slate-300 dark:border-slate-700 px-2 py-1 text-center'>
-                            {row.provider}
-                        </TableCell>
-                        <TableCell className='border border-slate-300 dark:border-slate-700 px-2 py-1 text-center'>
-                            {row.model}
-                        </TableCell>
-                        <TableCell className='border border-slate-300 dark:border-slate-700 px-2 py-1 text-center'>
-                            {row.inputCost}
-                        </TableCell>
-                        <TableCell className='border border-slate-300 dark:border-slate-700 px-2 py-1 text-center'>
-                            {row.outputCost}
-                        </TableCell>
-                        <TableCell className='border border-slate-300 dark:border-slate-700 px-2 py-1 text-center'>
-                            {row.totalCost}
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+        <PriceTableLayout
+            headers={TABLE_HEADERS}
+            tableData={tableData}
+            currency={currency}
+        />
     );
 };
 
 // Error component
-const ErrorMessage = () => (
+const ErrorMessage = ({ message }: { message?: string }) => (
     <div className="bg-destructive/25 border border-red-500 text-red-500 py-2 px-4 text-lg rounded-lg">
-        Error in fetching Data.
+        {message || "Error in fetching Data."}
     </div>
 );
 
 export default function App() {
     // State with better initial values
-    const [unit, setUnit] = useState<Unit>('Tokens');
+    const [unit, setUnit] = useState<Unit>("Tokens");
     const [ioUnits, setIOUnits] = useState<IOUnits>({
-        inputUnits: 0,
-        outputUnits: 0,
-        numberOfCalls: 1
+        inputUnits: 1000000,
+        outputUnits: 1000000,
+        numberOfCalls: 1,
     });
-    const [currency, setCurrency] = useState<string>('USD');
+    const [currency, setCurrency] = useState<string>("USD");
 
     // Optimized update functions with useCallback
     const updateInputUnits = useCallback((inputUnits: number) => {
@@ -150,9 +154,10 @@ export default function App() {
     const {
         data: providers = [],
         isLoading: isLoadingProviders,
-        isError: isProviderError
+        isError: isProviderError,
+        error: providerError,
     } = useQuery({
-        queryKey: ['providers'],
+        queryKey: ["providers"],
         queryFn: fetchProviders,
         staleTime: 10 * 60 * 1000, // 10 minutes
     });
@@ -160,35 +165,83 @@ export default function App() {
     const {
         data: currencyData,
         isLoading: isLoadingCurrency,
-        isError: isCurrencyError
+        isError: isCurrencyError,
+        error: currencyError,
     } = useQuery({
-        queryKey: ['currencyRates'],
+        queryKey: ["currencyRates"],
         queryFn: fetchCurrencyRates,
         staleTime: 60 * 60 * 1000, // 1 hour
-        enabled: currency !== 'USD', // Only fetch if not USD
+        enabled: currency !== "USD", // Only fetch if not USD
     });
+
+    // Memoize allowed currencies with better error handling
+    const allowedCurrencies = useMemo(() => {
+        const baseCurrencies = ["USD"];
+
+        if (!currencyData?.usd) return baseCurrencies;
+
+        try {
+            const additionalCurrencies = Object.keys(currencyData.usd)
+                .map((key: string) => key.toUpperCase())
+                .filter((curr) => curr !== "USD");
+
+            return [...baseCurrencies, ...additionalCurrencies];
+        } catch (error) {
+            console.error("Error processing currency data:", error);
+            return baseCurrencies;
+        }
+    }, [currencyData]);
 
     // Optimized conversion rate calculation
     const conversionRate = useMemo(() => {
-        if (currency === 'USD') return 1;
-        const rate = currencyData.usd[currency.toLowerCase()];
-        return (typeof rate === 'number' && rate > 0) ? rate : 1;
+        if (currency === "USD") return 1;
+        if (!currencyData?.usd) return 1;
+
+        const rate = currencyData["usd"][currency.toLowerCase()];
+        return typeof rate === "number" && rate > 0 ? rate : 1;
     }, [currency, currencyData]);
 
-    const isLoading = isLoadingProviders || (currency !== 'USD' && isLoadingCurrency);
+    const isLoading =
+        isLoadingProviders || (currency !== "USD" && isLoadingCurrency);
     const hasError = isProviderError || isCurrencyError;
+
+    const errorMessage = useMemo(() => {
+        if (isProviderError && providerError) {
+            return `Provider Error: ${providerError.message}`;
+        }
+        if (isCurrencyError && currencyError) {
+            return `Currency Error: ${currencyError.message}`;
+        }
+        return undefined;
+    }, [isProviderError, isCurrencyError, providerError, currencyError]);
+
+    // Reset currency to USD if it becomes invalid
+    const handleCurrencyChange = useCallback(
+        (newCurrency: string) => {
+            if (allowedCurrencies.includes(newCurrency)) {
+                setCurrency(newCurrency);
+            } else {
+                setCurrency("USD");
+            }
+        },
+        [allowedCurrencies]
+    );
 
     return (
         <HydrationBoundary state={dehydrate(queryClient)}>
-            <div className='min-h-screen flex flex-col items-center justify-start bg-background'>
+            <div className="min-h-screen flex flex-col items-center justify-start">
                 <Header />
 
-                <main className="container">
-                    <p className="mb-4 text-gray-900 dark:text-gray-300 text-justify p-2">
-                        This calculator helps you estimate the cost of using various language models. It calculates the cost based on the number of input and output tokens along with the number of calls you make. The cost is calculated in the currency or crypto of your choice. The input cost, output cost, and total cost are calculated for each provider.
+                <main className="container mx-auto px-4">
+                    <p className="mb-4 text-justify p-2">
+                        This calculator helps you estimate the cost of using various
+                        language models. It calculates the cost based on the number of input
+                        and output tokens along with the number of calls you make. The cost
+                        is calculated in the currency of your choice. The input cost, output
+                        cost, and total cost are calculated for each provider.
                     </p>
 
-                    <div className="grid grid-cols-3 gap-4 md:gap-4 p-2">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-2">
                         <NumberInput
                             id="input-tokens"
                             label={`Input ${unit}`}
@@ -212,13 +265,13 @@ export default function App() {
                         />
                     </div>
 
-                    <div className="flex flex-row">
+                    <div className="flex flex-col md:flex-row gap-4 p-2">
                         <SelectField
                             id="currency"
                             label="Currency"
                             value={currency}
-                            onChange={setCurrency}
-                            options={ALLOWED_CURRENCIES}
+                            onChange={handleCurrencyChange}
+                            options={allowedCurrencies}
                         />
                         <SelectField
                             id="input-unit"
@@ -232,7 +285,7 @@ export default function App() {
                     {isLoading ? (
                         <LoadingSkeleton />
                     ) : hasError ? (
-                        <ErrorMessage />
+                        <ErrorMessage message={errorMessage} />
                     ) : (
                         <PriceTable
                             providers={providers}
