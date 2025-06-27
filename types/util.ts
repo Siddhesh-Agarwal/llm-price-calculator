@@ -25,7 +25,7 @@ type PriceTableProps = {
     conversionRate: number;
 }
 
-interface NumberInputProps {
+type NumberInputProps = {
     id: string;
     label: string;
     value: number;
@@ -33,7 +33,7 @@ interface NumberInputProps {
     min: number;
 }
 
-interface SelectFieldProps {
+type SelectFieldProps = {
     id: string;
     label: string;
     value: string;

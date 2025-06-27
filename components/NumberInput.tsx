@@ -1,4 +1,4 @@
-import { NumberInputProps } from "@/types/util";
+import type { NumberInputProps } from "@/types/util";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 

@@ -1,4 +1,4 @@
-import { SelectFieldProps } from "@/types/util";
+import type { SelectFieldProps } from "@/types/util";
 import { Label } from "./ui/label";
 import {
     Select,
@@ -15,12 +15,18 @@ export default function SelectField({
     onChange,
     options,
 }: SelectFieldProps) {
+    if (options.length === 0) return null;
+    const isDisabled = options.length < 2;
     return (
-        <fieldset className="relative p-2">
+        <fieldset className="relative" disabled={isDisabled}>
             <Label htmlFor={id} className="px-1 py-0.5">
                 {label}
             </Label>
-            <Select value={value} onValueChange={onChange}>
+            <Select
+                value={value}
+                onValueChange={onChange}
+                disabled={isDisabled}
+            >
                 <SelectTrigger id={id} name={id}>
                     <SelectValue />
                 </SelectTrigger>

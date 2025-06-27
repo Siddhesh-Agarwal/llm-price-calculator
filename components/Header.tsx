@@ -15,7 +15,7 @@ export default function Header() {
                 href="https://github.com/Siddhesh-Agarwal/llm-price-calculator"
                 target="_blank"
                 rel="noreferrer"
-                className="hover:bg-slate-300 py-1 px-2 rounded-lg"
+                className="hover:bg-accent py-1 px-2 rounded-lg border border-border"
             >
                 <Image src={GitHubIcon} alt="GitHub" className="w-6 h-6 rounded" />
             </Link>

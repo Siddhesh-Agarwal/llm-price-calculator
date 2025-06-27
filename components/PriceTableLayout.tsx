@@ -1,4 +1,4 @@
-import { PriceTableFields } from "@/types/util";
+import type { PriceTableFields } from "@/types/util";
 import {
     Table,
     TableBody,
