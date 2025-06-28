@@ -49,7 +49,6 @@ async function fetchProviders(): Promise<ProviderDetails[]> {
     const response = await fetch("/api");
     if (!response.ok) throw new Error("Failed to fetch providers");
     const json = await response.json();
-    console.log("Price Info", json);
     return json;
 }
 
@@ -59,7 +58,6 @@ async function fetchCurrencyRates() {
     );
     if (!response.ok) throw new Error("Failed to fetch currency rates");
     const json = await response.json();
-    console.log("Currency Info", json);
     return json;
 }
 
@@ -164,7 +162,7 @@ export default function App() {
     });
 
     const {
-        data: currencyData,
+        data: currencyData = {},
         isLoading: isLoadingCurrency,
         isError: isCurrencyError,
         error: currencyError,
@@ -172,7 +170,6 @@ export default function App() {
         queryKey: ["currencyRates"],
         queryFn: fetchCurrencyRates,
         staleTime: 60 * 60 * 1000, // 1 hour
-        enabled: currency !== "USD", // Only fetch if not USD
     });
 
     // Memoize allowed currencies with better error handling
