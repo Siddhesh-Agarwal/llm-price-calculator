@@ -46,23 +46,22 @@ const formatCost = (cost: number, precision: number): string => {
 
 // API functions - moved outside to prevent recreation
 async function fetchProviders(): Promise<ProviderDetails[]> {
-    const response = await fetch("/api", { cache: "force-cache" });
+    const response = await fetch("/api");
     if (!response.ok) throw new Error("Failed to fetch providers");
     const json = await response.json();
     console.log("Price Info", json);
     return json;
-};
+}
 
 async function fetchCurrencyRates() {
     const response = await fetch(
-        "https://latest.currency-api.pages.dev/v1/currencies/usd.json",
-        { cache: "force-cache" }
+        "https://latest.currency-api.pages.dev/v1/currencies/usd.json"
     );
     if (!response.ok) throw new Error("Failed to fetch currency rates");
     const json = await response.json();
     console.log("Currency Info", json);
     return json;
-};
+}
 
 // Singleton query client
 const queryClient = new QueryClient({
@@ -141,15 +140,15 @@ export default function App() {
 
     // Optimized update functions with useCallback
     const updateInputUnits = useCallback((inputUnits: number) => {
-        setIOUnits(prev => ({ ...prev, inputUnits }));
+        setIOUnits((prev) => ({ ...prev, inputUnits }));
     }, []);
 
     const updateOutputUnits = useCallback((outputUnits: number) => {
-        setIOUnits(prev => ({ ...prev, outputUnits }));
+        setIOUnits((prev) => ({ ...prev, outputUnits }));
     }, []);
 
     const updateNumberOfCalls = useCallback((numberOfCalls: number) => {
-        setIOUnits(prev => ({ ...prev, numberOfCalls }));
+        setIOUnits((prev) => ({ ...prev, numberOfCalls }));
     }, []);
 
     // Queries with better configuration
