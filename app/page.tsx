@@ -112,11 +112,13 @@ const PriceTable = ({
     }, [providers, unit, inputUnits, outputUnits, numberOfCalls, conversionRate]);
 
     return (
-        <PriceTableLayout
-            headers={TABLE_HEADERS}
-            tableData={tableData}
-            currency={currency}
-        />
+        <div className="w-full mt-4 overflow-x-auto">
+            <PriceTableLayout
+                headers={TABLE_HEADERS}
+                tableData={tableData}
+                currency={currency}
+            />
+        </div>
     );
 };
 

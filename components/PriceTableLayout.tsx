@@ -1,4 +1,4 @@
-import type { PriceTableFields } from "@/types/util";
+import type { PriceTableFields, Provider } from "@/types/util";
 import {
     Table,
     TableBody,
@@ -7,6 +7,18 @@ import {
     TableHeader,
     TableRow,
 } from "./ui/table";
+import { cn } from "@/lib/utils";
+
+function providerColor(provider: Provider): string {
+    switch (provider) {
+        case "OpenAI":
+            return "text-foreground"
+        case "Claude":
+            return "text-[#d97757]"
+        case "Google":
+            return "text-[#4285f4]"
+    }
+}
 
 export default function PriceTableLayout({
     headers,
@@ -18,7 +30,7 @@ export default function PriceTableLayout({
     currency: string;
 }) {
     return (
-        <Table className="mt-4 w-full table-fixed border mb-2">
+        <Table className="w-full border mb-2">
             <TableHeader>
                 <TableRow>
                     {headers.map((header) => (
@@ -38,7 +50,7 @@ export default function PriceTableLayout({
             <TableBody className="font-mono text-sm">
                 {tableData.map((row, index) => (
                     <TableRow key={`${row.provider}-${row.model}-${index}`}>
-                        <TableCell className="border border-border px-2 py-1 text-center">
+                        <TableCell className={cn("border border-border px-2 py-1 text-center", providerColor(row.provider))}>
                             {row.provider}
                         </TableCell>
                         <TableCell className="border border-border px-2 py-1 text-center">
