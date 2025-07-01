@@ -19,8 +19,6 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import SelectField from "@/components/SelectField";
 import NumberInput from "@/components/NumberInput";
 import PriceTableLayout from "@/components/PriceTableLayout";
-import Image from "next/image";
-import { useTheme } from "next-themes";
 
 // Constants - moved outside component to prevent recreation
 const PRECISION = 3;
@@ -137,7 +135,6 @@ export default function App() {
         numberOfCalls: 1,
     });
     const [currency, setCurrency] = useState<string>("USD");
-    const { systemTheme } = useTheme();
 
 
     // Optimized update functions with useCallback
