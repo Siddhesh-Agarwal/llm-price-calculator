@@ -19,6 +19,8 @@ import LoadingSkeleton from "@/components/LoadingSkeleton";
 import SelectField from "@/components/SelectField";
 import NumberInput from "@/components/NumberInput";
 import PriceTableLayout from "@/components/PriceTableLayout";
+import Image from "next/image";
+import { useTheme } from "next-themes";
 
 // Constants - moved outside component to prevent recreation
 const PRECISION = 3;
@@ -135,6 +137,8 @@ export default function App() {
         numberOfCalls: 1,
     });
     const [currency, setCurrency] = useState<string>("USD");
+    const { systemTheme } = useTheme();
+
 
     // Optimized update functions with useCallback
     const updateInputUnits = useCallback((inputUnits: number) => {
@@ -231,12 +235,15 @@ export default function App() {
                 <Header />
 
                 <main className="container mx-auto px-4">
-                    <p className="mb-4 text-justify p-2">
+                    <p className="mb-4 text-justify px-2">
                         This calculator helps you estimate the cost of using various
                         language models. It calculates the cost based on the number of input
                         and output tokens along with the number of calls you make. The cost
                         is calculated in the currency of your choice. The input cost, output
                         cost, and total cost are calculated for each provider.
+                    </p>
+                    <p className="mb-4 text-justify px-2">
+                        To access the public API, please visit: <a href="/api" className="text-blue-500 hover:underline"><code className="font-mono bg-accent">/api</code></a>
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-2">
