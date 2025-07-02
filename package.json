@@ -13,6 +13,7 @@
     "@radix-ui/react-select": "^2.1.7",
     "@tailwindcss/postcss": "^4.1.3",
     "@tanstack/react-query": "^5.72.2",
+    "@vercel/analytics": "^1.5.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.473.0",

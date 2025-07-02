@@ -1,4 +1,4 @@
-import type { PriceTableFields, Provider } from "@/types/util";
+import type { PriceTableFields, PriceTableProps, Provider } from "@/types/util";
 import {
     Table,
     TableBody,
@@ -7,67 +7,118 @@ import {
     TableHeader,
     TableRow,
 } from "./ui/table";
-import { cn } from "@/lib/utils";
+import { cn, formatCost } from "@/lib/utils";
+import { useMemo } from "react";
+
+const PRECISION = 3;
+const TOKEN_CONVERSION_RATES = {
+    Words: 1.333,
+    Characters: 0.4,
+    Tokens: 1,
+} as const;
+const TABLE_HEADERS = [
+    "Provider",
+    "Model",
+    "Input Cost",
+    "Output Cost",
+    "Total Cost",
+];
 
 function providerColor(provider: Provider): string {
     switch (provider) {
         case "OpenAI":
-            return "text-foreground"
+            return "text-foreground";
         case "Claude":
-            return "text-[#d97757]"
+            return "text-[#d97757]";
         case "Google":
-            return "text-[#4285f4]"
+            return "text-[#4285f4]";
     }
 }
 
-export default function PriceTableLayout({
-    headers,
-    tableData,
+export default function PriceTable({
+    providers,
+    unit,
     currency,
-}: {
-    headers: string[];
-    tableData: PriceTableFields[];
-    currency: string;
-}) {
+    ioUnits,
+    conversionRate,
+}: PriceTableProps) {
+    const { inputUnits, outputUnits, numberOfCalls } = ioUnits;
+
+    // Memoize expensive calculations
+    const tableData: PriceTableFields[] = useMemo(() => {
+        if (!providers || providers.length === 0) return [];
+
+        const tokensPerUnit = TOKEN_CONVERSION_RATES[unit];
+
+        return providers.map((provider) => {
+            const baseCostMultiplier = tokensPerUnit * conversionRate * numberOfCalls;
+            const inputCost =
+                provider.price.inputCostInDollarsPerMillionTokens *
+                inputUnits *
+                baseCostMultiplier;
+            const outputCost =
+                provider.price.outputCostInDollarsPerMillionTokens *
+                outputUnits *
+                baseCostMultiplier;
+
+            return {
+                provider: provider.name,
+                model: provider.model,
+                inputCost: formatCost(inputCost, PRECISION),
+                outputCost: formatCost(outputCost, PRECISION),
+                totalCost: formatCost(inputCost + outputCost, PRECISION),
+            };
+        });
+    }, [providers, unit, inputUnits, outputUnits, numberOfCalls, conversionRate]);
+
     return (
-        <Table className="w-full border mb-2">
-            <TableHeader>
-                <TableRow>
-                    {headers.map((header) => (
-                        <TableHead
-                            key={header}
-                            className="font-bold border bg-primary text-center"
-                        >
-                            {header === "Input Cost" ||
-                                header === "Output Cost" ||
-                                header === "Total Cost"
-                                ? `${header} (${currency})`
-                                : header}
-                        </TableHead>
-                    ))}
-                </TableRow>
-            </TableHeader>
-            <TableBody className="font-mono text-sm">
-                {tableData.map((row, index) => (
-                    <TableRow key={`${row.provider}-${row.model}-${index}`}>
-                        <TableCell className={cn("border border-border px-2 py-1 text-center", providerColor(row.provider))}>
-                            {row.provider}
-                        </TableCell>
-                        <TableCell className="border border-border px-2 py-1 text-center">
-                            {row.model}
-                        </TableCell>
-                        <TableCell className="border border-border px-2 py-1 text-center">
-                            {row.inputCost}
-                        </TableCell>
-                        <TableCell className="border border-border px-2 py-1 text-center">
-                            {row.outputCost}
-                        </TableCell>
-                        <TableCell className="border border-border px-2 py-1 text-center">
-                            {row.totalCost}
-                        </TableCell>
+        <div className="w-full mt-4 overflow-x-auto">
+            <Table className="w-full border mb-2">
+                <TableHeader>
+                    <TableRow>
+                        {
+                            TABLE_HEADERS.map((header) => (
+                                <TableHead
+                                    key={header}
+                                    className="font-bold border bg-primary text-center px-2 py-1"
+                                >
+                                    {header === "Input Cost" ||
+                                        header === "Output Cost" ||
+                                        header === "Total Cost"
+                                        ? `${header} (${currency})`
+                                        : header}
+                                </TableHead>
+                            ))
+                        }
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHeader>
+                <TableBody className="font-mono text-sm">
+                    {tableData.map((row, index) => (
+                        <TableRow key={`${row.provider}-${row.model}-${index}`}>
+                            <TableCell
+                                className={cn(
+                                    "border border-border px-2 py-1 text-center",
+                                    providerColor(row.provider)
+                                )}
+                            >
+                                {row.provider}
+                            </TableCell>
+                            <TableCell className="border border-border px-2 py-1 text-center">
+                                {row.model}
+                            </TableCell>
+                            <TableCell className="border border-border px-2 py-1 text-center">
+                                {row.inputCost}
+                            </TableCell>
+                            <TableCell className="border border-border px-2 py-1 text-center">
+                                {row.outputCost}
+                            </TableCell>
+                            <TableCell className="border border-border px-2 py-1 text-center">
+                                {row.totalCost}
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
     );
 }

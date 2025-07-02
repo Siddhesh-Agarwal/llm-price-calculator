@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next"
 import Providers from "./providers";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -56,6 +57,7 @@ export default function RootLayout({
                 suppressContentEditableWarning
                 suppressHydrationWarning
             >
+                <Analytics />
                 <Providers>
                     {children}
                     <Footer />

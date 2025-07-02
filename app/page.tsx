@@ -1,13 +1,7 @@
 "use client";
 
 import { useMemo, useState, useCallback } from "react";
-import type {
-    IOUnits,
-    PriceTableFields,
-    PriceTableProps,
-    ProviderDetails,
-    Unit,
-} from "@/types/util";
+import type { IOUnits, ProviderDetails, Unit } from "@/types/util";
 import {
     dehydrate,
     HydrationBoundary,
@@ -18,31 +12,10 @@ import Header from "@/components/Header";
 import LoadingSkeleton from "@/components/LoadingSkeleton";
 import SelectField from "@/components/SelectField";
 import NumberInput from "@/components/NumberInput";
-import PriceTableLayout from "@/components/PriceTableLayout";
+import PriceTable from "@/components/PriceTableLayout";
 
 // Constants - moved outside component to prevent recreation
-const PRECISION = 3;
 const UNIT_OPTIONS = ["Tokens", "Words", "Characters"] as const;
-const TABLE_HEADERS = [
-    "Provider",
-    "Model",
-    "Input Cost",
-    "Output Cost",
-    "Total Cost",
-];
-
-// Token conversion rates - precomputed constants
-const TOKEN_CONVERSION_RATES = {
-    Words: 1.333,
-    Characters: 0.4,
-    Tokens: 1,
-} as const;
-
-// Optimized helper function with memoization potential
-const formatCost = (cost: number, precision: number): string => {
-    const pow = Math.pow(10, precision);
-    return (Math.round((cost / 1e6) * pow) / pow).toFixed(precision);
-};
 
 // API functions - moved outside to prevent recreation
 async function fetchProviders(): Promise<ProviderDetails[]> {
@@ -72,53 +45,6 @@ const queryClient = new QueryClient({
     },
 });
 
-const PriceTable = ({
-    providers,
-    unit,
-    currency,
-    ioUnits,
-    conversionRate,
-}: PriceTableProps) => {
-    const { inputUnits, outputUnits, numberOfCalls } = ioUnits;
-
-    // Memoize expensive calculations
-    const tableData: PriceTableFields[] = useMemo(() => {
-        if (!providers || providers.length === 0) return [];
-
-        const tokensPerUnit = TOKEN_CONVERSION_RATES[unit];
-
-        return providers.map((provider) => {
-            const baseCostMultiplier = tokensPerUnit * conversionRate * numberOfCalls;
-            const inputCost =
-                provider.price.inputCostInDollarsPerMillionTokens *
-                inputUnits *
-                baseCostMultiplier;
-            const outputCost =
-                provider.price.outputCostInDollarsPerMillionTokens *
-                outputUnits *
-                baseCostMultiplier;
-
-            return {
-                provider: provider.name,
-                model: provider.model,
-                inputCost: formatCost(inputCost, PRECISION),
-                outputCost: formatCost(outputCost, PRECISION),
-                totalCost: formatCost(inputCost + outputCost, PRECISION),
-            };
-        });
-    }, [providers, unit, inputUnits, outputUnits, numberOfCalls, conversionRate]);
-
-    return (
-        <div className="w-full mt-4 overflow-x-auto">
-            <PriceTableLayout
-                headers={TABLE_HEADERS}
-                tableData={tableData}
-                currency={currency}
-            />
-        </div>
-    );
-};
-
 // Error component
 const ErrorMessage = ({ message }: { message?: string }) => (
     <div className="bg-destructive/25 border border-red-500 text-red-500 py-2 px-4 text-lg rounded-lg">
@@ -135,7 +61,6 @@ export default function App() {
         numberOfCalls: 1,
     });
     const [currency, setCurrency] = useState<string>("USD");
-
 
     // Optimized update functions with useCallback
     const updateInputUnits = useCallback((inputUnits: number) => {
@@ -240,7 +165,10 @@ export default function App() {
                         cost, and total cost are calculated for each provider.
                     </p>
                     <p className="mb-4 text-justify px-2">
-                        To access the public API, please visit: <a href="/api" className="text-blue-500 hover:underline"><code className="font-mono bg-accent">/api</code></a>
+                        To access the public API, please visit:{" "}
+                        <a href="/api" className="text-blue-500 hover:underline">
+                            <code className="font-mono bg-accent">/api</code>
+                        </a>
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-2">
@@ -267,7 +195,7 @@ export default function App() {
                         />
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-4 p-2">
+                    <div className="flex flex-row gap-2 md:gap-4 p-2">
                         <SelectField
                             id="currency"
                             label="Currency"
