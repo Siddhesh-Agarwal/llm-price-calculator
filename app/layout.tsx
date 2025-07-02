@@ -30,6 +30,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(site_config.url),
     authors: {
         name: site_config.author,
+        url: "https://siddhesh-tech.vercel.app/",
     },
     twitter: {
         title: site_config.title,
