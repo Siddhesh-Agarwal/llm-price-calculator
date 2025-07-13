@@ -27,15 +27,15 @@ const TABLE_HEADERS = [
 function providerColor(provider: Provider): string {
     switch (provider) {
         case "OpenAI":
-            return "text-white dark:text-[#080808]";
+            return "text-[#080808] dark:text-white";
         case "Claude":
             return "text-[#DE7356]";
         case "Google":
             return "text-[#4285f4]";
         case "Moonshot":
-            return "text-[#2D3250]";
+            return "text-[#2D3250] dark:text-[#7C7CE0]";
         case "Deepseek":
-            return "text-[#003366]";
+            return "text-[#003366] dark:text-[#4A709E]";
     }
 }
 
