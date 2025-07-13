@@ -1,4 +1,4 @@
-type Provider = "OpenAI" | "Claude" | "Google" | "Moonshot";
+type Provider = "OpenAI" | "Claude" | "Google" | "Moonshot" | "Deepseek";
 type Unit = "Tokens" | "Words" | "Characters";
 type Pricing = {
     inputCostInDollarsPerMillionTokens: number;

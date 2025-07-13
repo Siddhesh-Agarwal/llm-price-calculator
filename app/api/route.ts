@@ -318,6 +318,23 @@ const models: ProviderDetails[] = [
       outputCostInDollarsPerMillionTokens: 2.5,
     },
   },
+  // Deepseek
+  {
+    name: "Deepseek",
+    model: "deepseek-chat",
+    price: {
+      inputCostInDollarsPerMillionTokens: 0.27,
+      outputCostInDollarsPerMillionTokens: 1.1,
+    },
+  },
+  {
+    name: "Deepseek",
+    model: "deepseek-reasoner",
+    price: {
+      inputCostInDollarsPerMillionTokens: 0.55,
+      outputCostInDollarsPerMillionTokens: 2.19,
+    },
+  },
 ];
 
 export async function GET() {

@@ -34,6 +34,8 @@ function providerColor(provider: Provider): string {
             return "text-[#4285f4]";
         case "Moonshot":
             return "text-[#1583ff]";
+        case "Deepseek":
+            return "text-[#4f6dfe]";
     }
 }
 
