@@ -32,6 +32,8 @@ function providerColor(provider: Provider): string {
             return "text-[#d97757]";
         case "Google":
             return "text-[#4285f4]";
+        case "Moonshot":
+            return "text-[#1583ff]";
     }
 }
 
@@ -76,20 +78,18 @@ export default function PriceTable({
             <Table className="w-full border mb-2">
                 <TableHeader>
                     <TableRow>
-                        {
-                            TABLE_HEADERS.map((header) => (
-                                <TableHead
-                                    key={header}
-                                    className="font-bold border bg-primary text-center px-2 py-1"
-                                >
-                                    {header === "Input Cost" ||
-                                        header === "Output Cost" ||
-                                        header === "Total Cost"
-                                        ? `${header} (${currency})`
-                                        : header}
-                                </TableHead>
-                            ))
-                        }
+                        {TABLE_HEADERS.map((header) => (
+                            <TableHead
+                                key={header}
+                                className="font-bold border bg-primary text-center px-2 py-1"
+                            >
+                                {header === "Input Cost" ||
+                                    header === "Output Cost" ||
+                                    header === "Total Cost"
+                                    ? `${header} (${currency})`
+                                    : header}
+                            </TableHead>
+                        ))}
                     </TableRow>
                 </TableHeader>
                 <TableBody className="font-mono text-sm">
