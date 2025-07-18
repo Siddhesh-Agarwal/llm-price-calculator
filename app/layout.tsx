@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
 import { Inter, Geist_Mono } from "next/font/google";
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
 import Providers from "./providers";
 import Footer from "@/components/Footer";
 import "./globals.css";
 
-const geistSans = Inter({
+const inter = Inter({
     variable: "--font-inter-sans",
-    subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-    variable: "--font-geist-mono",
     subsets: ["latin"],
 });
 
@@ -21,7 +16,7 @@ const site_config = {
     description: "A Simple No-Nonsense LLM Price Calculator",
     author: "Siddhesh Agarwal",
     twitter_handle: "@Siddhesh0205",
-    image: "/og.png"
+    image: "/og.png",
 };
 
 export const metadata: Metadata = {
@@ -30,7 +25,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(site_config.url),
     authors: {
         name: site_config.author,
-        url: "https://siddhesh-tech.vercel.app/",
+        url: "https://siddhesh.cc/",
     },
     twitter: {
         title: site_config.title,
@@ -47,6 +42,7 @@ export const metadata: Metadata = {
         url: site_config.url,
         images: site_config.image,
         type: "website",
+        locale: "en_US",
     },
 };
 
@@ -58,7 +54,7 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background`}
+                className={`${inter.variable} antialiased bg-background`}
                 suppressContentEditableWarning
                 suppressHydrationWarning
             >
