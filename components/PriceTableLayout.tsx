@@ -1,4 +1,4 @@
-import type { PriceTableFields, PriceTableProps, Provider } from "@/types/util";
+import type { PriceTableFields, PriceTableProps } from "@/types/util";
 import { formatCost } from "@/lib/utils";
 import { useMemo } from "react";
 import { DataTable } from "./ui/data-table";
