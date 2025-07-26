@@ -1,7 +1,7 @@
 import { ColumnDef } from "@tanstack/react-table";
 import type { PriceTableFields, Provider } from "@/types/util";
 import { Button } from "./ui/button";
-import { SortAsc, SortDesc } from "lucide-react";
+import { ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
 
 function providerColor(provider: Provider): string {
   switch (provider) {
@@ -28,8 +28,13 @@ export const columns: ColumnDef<PriceTableFields>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Total Cost
-          {column.getIsSorted() &&
-            (column.getIsSorted() === "asc" ? <SortAsc /> : <SortDesc />)}
+          {column.getIsSorted() === false ? (
+            <ArrowUpDown />
+          ) : column.getIsSorted() === "asc" ? (
+            <SortAsc />
+          ) : (
+            <SortDesc />
+          )}
         </Button>
       );
     },
@@ -50,19 +55,56 @@ export const columns: ColumnDef<PriceTableFields>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Model
-          {column.getIsSorted() &&
-            (column.getIsSorted() === "asc" ? <SortAsc /> : <SortDesc />)}
+          {column.getIsSorted() === false ? (
+            <ArrowUpDown />
+          ) : column.getIsSorted() === "asc" ? (
+            <SortAsc />
+          ) : (
+            <SortDesc />
+          )}
         </Button>
       );
     },
   },
   {
     accessorKey: "inputCost",
-    header: "Input Cost",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Input Cost
+          {column.getIsSorted() === false ? (
+            <ArrowUpDown />
+          ) : column.getIsSorted() === "asc" ? (
+            <SortAsc />
+          ) : (
+            <SortDesc />
+          )}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "outputCost",
-    header: "Output Cost",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant={"ghost"}
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Output Cost
+          {column.getIsSorted() === false ? (
+            <ArrowUpDown />
+          ) : column.getIsSorted() === "asc" ? (
+            <SortAsc />
+          ) : (
+            <SortDesc />
+          )}
+        </Button>
+      );
+    },
   },
   {
     accessorKey: "totalCost",
@@ -73,8 +115,13 @@ export const columns: ColumnDef<PriceTableFields>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Total Cost
-          {column.getIsSorted() &&
-            (column.getIsSorted() === "asc" ? <SortAsc /> : <SortDesc />)}
+          {column.getIsSorted() === false ? (
+            <ArrowUpDown />
+          ) : column.getIsSorted() === "asc" ? (
+            <SortAsc />
+          ) : (
+            <SortDesc />
+          )}
         </Button>
       );
     },
