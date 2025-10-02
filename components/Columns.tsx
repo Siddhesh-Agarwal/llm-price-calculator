@@ -1,7 +1,7 @@
-import { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
 import type { PriceTableFields, Provider } from "@/types/util";
 import { Button } from "./ui/button";
-import { ArrowUpDown, SortAsc, SortDesc } from "lucide-react";
 
 function providerColor(provider: Provider): string {
   switch (provider) {

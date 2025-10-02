@@ -1,8 +1,8 @@
-import type { PriceTableFields, PriceTableProps } from "@/types/util";
-import { formatCost } from "@/lib/utils";
 import { useMemo } from "react";
-import { DataTable } from "./ui/data-table";
+import { formatCost } from "@/lib/utils";
+import type { PriceTableFields, PriceTableProps } from "@/types/util";
 import { columns } from "./Columns";
+import { DataTable } from "./ui/data-table";
 
 const PRECISION = 3;
 const TOKEN_CONVERSION_RATES = {
