@@ -1,22 +1,22 @@
-import { ProviderDetails } from "@/types/util";
 import { NextResponse } from "next/server";
+import type { ProviderDetails } from "@/types/util";
 
 const models: ProviderDetails[] = [
   // OpenAI
-  {
-    name: "OpenAI",
-    model: "gpt-3.5-turbo",
-    price: {
-      inputCostInDollarsPerMillionTokens: 1.0,
-      outputCostInDollarsPerMillionTokens: 2.0,
-    },
-  },
   {
     name: "OpenAI",
     model: "gpt-4o-mini",
     price: {
       inputCostInDollarsPerMillionTokens: 0.15,
       outputCostInDollarsPerMillionTokens: 0.6,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "gpt-4o-2024-05-13",
+    price: {
+      inputCostInDollarsPerMillionTokens: 5.0,
+      outputCostInDollarsPerMillionTokens: 15.0,
     },
   },
   {
@@ -29,42 +29,66 @@ const models: ProviderDetails[] = [
   },
   {
     name: "OpenAI",
-    model: "gpt-4o-2024-05-13",
+    model: "gpt-4.1-nano",
     price: {
-      inputCostInDollarsPerMillionTokens: 5.0,
-      outputCostInDollarsPerMillionTokens: 20.0,
+      inputCostInDollarsPerMillionTokens: 0.1,
+      outputCostInDollarsPerMillionTokens: 0.4,
     },
   },
   {
     name: "OpenAI",
-    model: "gpt-4",
+    model: "gpt-4.1-mini",
     price: {
-      inputCostInDollarsPerMillionTokens: 30.0,
-      outputCostInDollarsPerMillionTokens: 60.0,
+      inputCostInDollarsPerMillionTokens: 0.4,
+      outputCostInDollarsPerMillionTokens: 1.6,
     },
   },
   {
     name: "OpenAI",
-    model: "gpt-4-32k",
+    model: "gpt-4.1",
     price: {
-      inputCostInDollarsPerMillionTokens: 60.0,
-      outputCostInDollarsPerMillionTokens: 120.0,
+      inputCostInDollarsPerMillionTokens: 2.0,
+      outputCostInDollarsPerMillionTokens: 8.0,
     },
   },
   {
     name: "OpenAI",
-    model: "o1-mini",
+    model: "gpt-5-codex",
     price: {
-      inputCostInDollarsPerMillionTokens: 3.0,
-      outputCostInDollarsPerMillionTokens: 12.0,
+      inputCostInDollarsPerMillionTokens: 1.25,
+      outputCostInDollarsPerMillionTokens: 10.0,
     },
   },
   {
     name: "OpenAI",
-    model: "o1-preview",
+    model: "gpt-5-chat-latest",
     price: {
-      inputCostInDollarsPerMillionTokens: 15.0,
-      outputCostInDollarsPerMillionTokens: 60.0,
+      inputCostInDollarsPerMillionTokens: 1.25,
+      outputCostInDollarsPerMillionTokens: 10.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "gpt-5-nano",
+    price: {
+      inputCostInDollarsPerMillionTokens: 0.05,
+      outputCostInDollarsPerMillionTokens: 0.4,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "gpt-5-mini",
+    price: {
+      inputCostInDollarsPerMillionTokens: 0.25,
+      outputCostInDollarsPerMillionTokens: 4.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "gpt-5",
+    price: {
+      inputCostInDollarsPerMillionTokens: 1.25,
+      outputCostInDollarsPerMillionTokens: 10.0,
     },
   },
   {
@@ -73,6 +97,78 @@ const models: ProviderDetails[] = [
     price: {
       inputCostInDollarsPerMillionTokens: 15.0,
       outputCostInDollarsPerMillionTokens: 60.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o1-mini",
+    price: {
+      inputCostInDollarsPerMillionTokens: 1.1,
+      outputCostInDollarsPerMillionTokens: 4.4,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o1-pro",
+    price: {
+      inputCostInDollarsPerMillionTokens: 150.0,
+      outputCostInDollarsPerMillionTokens: 600.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o3",
+    price: {
+      inputCostInDollarsPerMillionTokens: 2.0,
+      outputCostInDollarsPerMillionTokens: 8.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o3-mini",
+    price: {
+      inputCostInDollarsPerMillionTokens: 1.1,
+      outputCostInDollarsPerMillionTokens: 4.4,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o3-pro",
+    price: {
+      inputCostInDollarsPerMillionTokens: 20.0,
+      outputCostInDollarsPerMillionTokens: 80.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o3-deep-research",
+    price: {
+      inputCostInDollarsPerMillionTokens: 10.0,
+      outputCostInDollarsPerMillionTokens: 40.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o4-mini",
+    price: {
+      inputCostInDollarsPerMillionTokens: 1.1,
+      outputCostInDollarsPerMillionTokens: 4.4,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "o4-mini-deep-research",
+    price: {
+      inputCostInDollarsPerMillionTokens: 2.0,
+      outputCostInDollarsPerMillionTokens: 8.0,
+    },
+  },
+  {
+    name: "OpenAI",
+    model: "codex-mini-latest",
+    price: {
+      inputCostInDollarsPerMillionTokens: 1.5,
+      outputCostInDollarsPerMillionTokens: 6.0,
     },
   },
   // Claude
@@ -337,6 +433,8 @@ const models: ProviderDetails[] = [
   },
 ];
 
+export const runtime = "edge";
+
 export async function GET() {
   try {
     return NextResponse.json(models, {
@@ -352,7 +450,7 @@ export async function GET() {
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch models data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
