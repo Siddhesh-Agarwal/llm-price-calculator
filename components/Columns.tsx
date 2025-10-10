@@ -27,7 +27,7 @@ export const columns: ColumnDef<PriceTableFields>[] = [
           variant={"ghost"}
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          Total Cost
+          Provider
           {column.getIsSorted() === false ? (
             <ArrowUpDown />
           ) : column.getIsSorted() === "asc" ? (
