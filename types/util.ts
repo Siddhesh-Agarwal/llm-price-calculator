@@ -29,7 +29,6 @@ type NumberInputProps = {
   label: string;
   value: number;
   onChange: (value: number) => void;
-  min: number;
 };
 
 type SelectFieldProps = {
