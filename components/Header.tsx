@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
-import GitHubIcon from "@/asset/github.svg";
 import { buttonVariants } from "./ui/button";
+import { Icons } from "./ui/icons";
 
 export default function Header() {
   return (
@@ -14,7 +13,7 @@ export default function Header() {
         target="_blank"
         className={buttonVariants({ size: "icon", variant: "ghost" })}
       >
-        <Image src={GitHubIcon} alt="GitHub" className="w-6 h-6 rounded" />
+        <Icons.github />
       </Link>
     </header>
   );
