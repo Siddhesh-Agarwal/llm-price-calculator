@@ -18,112 +18,133 @@ function providerColor(provider: Provider): string {
   }
 }
 
-export const columns: ColumnDef<PriceTableFields>[] = [
-  {
-    accessorKey: "provider",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant={"ghost"}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Provider
-          {column.getIsSorted() === false ? (
-            <ArrowUpDown />
-          ) : column.getIsSorted() === "asc" ? (
-            <SortAsc />
-          ) : (
-            <SortDesc />
-          )}
-        </Button>
-      );
+export function getColumns(currency: string) {
+  const supportedCurrencies = Intl.supportedValuesOf("currency");
+  const isCurrencySupported = supportedCurrencies.includes(currency);
+  const currencyFormat = Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: currency,
+  });
+
+  const formattedCurrencyIfSupported = (value: string) =>
+    isCurrencySupported ? currencyFormat.format(parseFloat(value)) : value;
+
+  return [
+    {
+      accessorKey: "provider",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Provider
+            {column.getIsSorted() === false ? (
+              <ArrowUpDown />
+            ) : column.getIsSorted() === "asc" ? (
+              <SortAsc />
+            ) : (
+              <SortDesc />
+            )}
+          </Button>
+        );
+      },
+      cell: (data) => {
+        return (
+          <span className={providerColor(data.row.original.provider)}>
+            {data.row.original.provider}
+          </span>
+        );
+      },
     },
-    cell: (info) => {
-      return (
-        <span className={providerColor(info.row.original.provider)}>
-          {info.row.original.provider}
-        </span>
-      );
+    {
+      accessorKey: "model",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Model
+            {column.getIsSorted() === false ? (
+              <ArrowUpDown />
+            ) : column.getIsSorted() === "asc" ? (
+              <SortAsc />
+            ) : (
+              <SortDesc />
+            )}
+          </Button>
+        );
+      },
     },
-  },
-  {
-    accessorKey: "model",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant={"ghost"}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Model
-          {column.getIsSorted() === false ? (
-            <ArrowUpDown />
-          ) : column.getIsSorted() === "asc" ? (
-            <SortAsc />
-          ) : (
-            <SortDesc />
-          )}
-        </Button>
-      );
+    {
+      accessorKey: "inputCost",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Input Cost
+            {column.getIsSorted() === false ? (
+              <ArrowUpDown />
+            ) : column.getIsSorted() === "asc" ? (
+              <SortAsc />
+            ) : (
+              <SortDesc />
+            )}
+          </Button>
+        );
+      },
+      cell: (data) => (
+        <div>{formattedCurrencyIfSupported(data.row.original.inputCost)}</div>
+      ),
     },
-  },
-  {
-    accessorKey: "inputCost",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant={"ghost"}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Input Cost
-          {column.getIsSorted() === false ? (
-            <ArrowUpDown />
-          ) : column.getIsSorted() === "asc" ? (
-            <SortAsc />
-          ) : (
-            <SortDesc />
-          )}
-        </Button>
-      );
+    {
+      accessorKey: "outputCost",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Output Cost
+            {column.getIsSorted() === false ? (
+              <ArrowUpDown />
+            ) : column.getIsSorted() === "asc" ? (
+              <SortAsc />
+            ) : (
+              <SortDesc />
+            )}
+          </Button>
+        );
+      },
+      cell: (data) => (
+        <div>{formattedCurrencyIfSupported(data.row.original.outputCost)}</div>
+      ),
     },
-  },
-  {
-    accessorKey: "outputCost",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant={"ghost"}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Output Cost
-          {column.getIsSorted() === false ? (
-            <ArrowUpDown />
-          ) : column.getIsSorted() === "asc" ? (
-            <SortAsc />
-          ) : (
-            <SortDesc />
-          )}
-        </Button>
-      );
+    {
+      accessorKey: "totalCost",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          >
+            Total Cost
+            {column.getIsSorted() === false ? (
+              <ArrowUpDown />
+            ) : column.getIsSorted() === "asc" ? (
+              <SortAsc />
+            ) : (
+              <SortDesc />
+            )}
+          </Button>
+        );
+      },
+      cell: (data) => (
+        <div>{formattedCurrencyIfSupported(data.row.original.totalCost)}</div>
+      ),
     },
-  },
-  {
-    accessorKey: "totalCost",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant={"ghost"}
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Total Cost
-          {column.getIsSorted() === false ? (
-            <ArrowUpDown />
-          ) : column.getIsSorted() === "asc" ? (
-            <SortAsc />
-          ) : (
-            <SortDesc />
-          )}
-        </Button>
-      );
-    },
-  },
-];
+  ] satisfies ColumnDef<PriceTableFields>[];
+}

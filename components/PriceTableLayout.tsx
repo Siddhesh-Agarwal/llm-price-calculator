@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { formatCost } from "@/lib/utils";
 import type { PriceTableFields, PriceTableProps } from "@/types/util";
-import { columns } from "./Columns";
+import { getColumns } from "./Columns";
 import { DataTable } from "./ui/data-table";
 
 const PRECISION = 3;
@@ -16,9 +16,10 @@ export default function PriceTable({
   unit,
   ioUnits,
   conversionRate,
+  currency,
 }: PriceTableProps) {
   const { inputUnits, outputUnits, numberOfCalls } = ioUnits;
-
+  const columns = getColumns(currency);
   // Memoize expensive calculations
   const tableData: PriceTableFields[] = useMemo(() => {
     if (!providers || providers.length === 0) return [];
