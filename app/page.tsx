@@ -13,17 +13,11 @@ import NumberInput from "@/components/NumberInput";
 import PriceTable from "@/components/PriceTableLayout";
 import SelectField from "@/components/SelectField";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import type { IOUnits, ProviderDetails, Unit } from "@/types/util";
+import { models as providers } from "@/data";
+import type { IOUnits, Unit } from "@/types/util";
 
 // Constants - moved outside component to prevent recreation
 const UNIT_OPTIONS = ["Tokens", "Words", "Characters"] as const;
-
-// API functions - moved outside to prevent recreation
-async function fetchProviders(): Promise<ProviderDetails[]> {
-	const response = await fetch("/api");
-	if (!response.ok) throw new Error("Failed to fetch providers");
-	return response.json();
-}
 
 async function fetchCurrencyRates(): Promise<{
 	date: string;
@@ -70,23 +64,10 @@ export default function App() {
 		setIOUnits((prev) => ({ ...prev, numberOfCalls }));
 	}, []);
 
-	// Queries with better configuration
-	const {
-		data: providers = [],
-		isLoading: isLoadingProviders,
-		isError: isProviderError,
-		error: providerError,
-	} = useQuery({
-		queryKey: ["providers"],
-		queryFn: fetchProviders,
-		staleTime: 10 * 60 * 1000, // 10 minutes
-	});
-
 	const {
 		data: currencyData,
-		isLoading: isLoadingCurrency,
-		isError: isCurrencyError,
-		error: currencyError,
+		status,
+		error,
 	} = useQuery({
 		queryKey: ["currencyRates"],
 		queryFn: fetchCurrencyRates,
@@ -119,20 +100,6 @@ export default function App() {
 		const rate = currencyData.usd[currency.toLowerCase()];
 		return typeof rate === "number" && rate > 0 ? rate : 1;
 	}, [currency, currencyData]);
-
-	const isLoading =
-		isLoadingProviders || (currency !== "USD" && isLoadingCurrency);
-	const hasError = isProviderError || isCurrencyError;
-
-	const errorMessage = useMemo(() => {
-		if (isProviderError && providerError) {
-			return `Provider Error: ${providerError.message}`;
-		}
-		if (isCurrencyError && currencyError) {
-			return `Currency Error: ${currencyError.message}`;
-		}
-		return undefined;
-	}, [isProviderError, isCurrencyError, providerError, currencyError]);
 
 	// Reset currency to USD if it becomes invalid
 	const handleCurrencyChange = useCallback(
@@ -199,12 +166,12 @@ export default function App() {
 						/>
 					</div>
 
-					{isLoading ? (
+					{status === "pending" ? (
 						<LoadingSkeleton />
-					) : hasError ? (
+					) : status === "error" ? (
 						<Alert variant={"destructive"}>
-							<AlertTitle>Error</AlertTitle>
-							<AlertDescription>{errorMessage}</AlertDescription>
+							<AlertTitle>Error: {error.name}</AlertTitle>
+							<AlertDescription>{error.message}</AlertDescription>
 						</Alert>
 					) : (
 						<PriceTable

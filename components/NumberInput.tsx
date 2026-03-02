@@ -1,6 +1,6 @@
 import type { NumberInputProps } from "@/types/util";
-import { Input } from "./ui/input";
 import { Field, FieldLabel } from "./ui/field";
+import { Input } from "./ui/input";
 
 export default function NumberInput({
 	label,
