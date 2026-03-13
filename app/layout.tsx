@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 const site_config = {
-	url: "https://llmprice.fyi/",
+	url: "https://llmprice.siddhesh.cc/",
 	title: "LLM Price Calculator",
 	description: "A Simple No-Nonsense LLM Price Calculator",
 	author: "Siddhesh Agarwal",

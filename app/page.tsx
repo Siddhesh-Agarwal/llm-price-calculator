@@ -128,7 +128,7 @@ export default function App() {
 					</p>
 					<p className="mb-4 text-justify px-2">
 						To access the public API, please visit:{" "}
-						<a href="/api" className="text-blue-500 hover:underline">
+						<a href="/api" className="text-blue-500 hover:underline" target="_blank" rel="noopener noreferrer">
 							<code className="font-mono bg-accent px-0.5">/api</code>
 						</a>
 					</p>
