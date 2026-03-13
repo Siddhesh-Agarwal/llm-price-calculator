@@ -92,6 +92,102 @@ export const models: ProviderDetails[] = [
 	},
 	{
 		name: "OpenAI",
+		model: "gpt-5.1",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.25,
+			outputCostInDollarsPerMillionTokens: 10.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.1-chat",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.25,
+			outputCostInDollarsPerMillionTokens: 10.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.1-codex",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.25,
+			outputCostInDollarsPerMillionTokens: 10.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.1-codex-mini",
+		price: {
+			inputCostInDollarsPerMillionTokens: 0.25,
+			outputCostInDollarsPerMillionTokens: 2.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.2",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.75,
+			outputCostInDollarsPerMillionTokens: 14.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.2-pro",
+		price: {
+			inputCostInDollarsPerMillionTokens: 21.0,
+			outputCostInDollarsPerMillionTokens: 168.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.2-codex",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.75,
+			outputCostInDollarsPerMillionTokens: 14.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.2-chat",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.75,
+			outputCostInDollarsPerMillionTokens: 14.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.3-codex",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.75,
+			outputCostInDollarsPerMillionTokens: 14.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.3-chat",
+		price: {
+			inputCostInDollarsPerMillionTokens: 1.75,
+			outputCostInDollarsPerMillionTokens: 14.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.4",
+		price: {
+			inputCostInDollarsPerMillionTokens: 2.5,
+			outputCostInDollarsPerMillionTokens: 15.0,
+		},
+	},
+	{
+		name: "OpenAI",
+		model: "gpt-5.4-pro",
+		price: {
+			inputCostInDollarsPerMillionTokens: 30,
+			outputCostInDollarsPerMillionTokens: 180.0,
+		},
+	},
+	{
+		name: "OpenAI",
 		model: "o1",
 		price: {
 			inputCostInDollarsPerMillionTokens: 15.0,
